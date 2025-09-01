@@ -20,6 +20,7 @@ Data peek (List list);
 bool isFull (List list);
 bool isEmpty (List list);
 void display();
+void visualize();
 
 int main() {
      
@@ -34,20 +35,21 @@ int main() {
     pop(&list);
     peek (list);
     
-    bool checkEmpt = isEmpty(list);
-    if (!checkEmpt) {
-        printf("It is not Empty!");
+    
+    if (!isEmpty(list)) {
+        printf("It is not Empty!\n");
     } else {
-        printf("It is empty!");
+        printf("It is empty!\n");
     }
    
     if (!isFull(list)) {
-        printf("It is Full");
+        printf("It is Full\n");
     } else {
-        printf("It is not full");
+        printf("It is not full\n");
     }
     
     display(list);
+    visualize(list);
     return 0;
 }
 
@@ -96,11 +98,37 @@ bool isEmpty (List list) {
     return list.top == 0;
 }
 
-void display(List list) {  // ! started from the left to right
-    int i;
-    printf("Displayed Array: \n");
-    for( i = list.top; i >= 0; i--) {
-        printf("%d, ", list.elems[i]);
-    } 
+
+// ! this code breaks the principle of stacks. It is not legal to traverse.
+// ! reason why it works, you are treating it as an array traversal, not a true abstract stack
+// void display(List list) {  // ! started from the left to right
+//     int i;
+//     printf("Displayed Array: \n");
+//     for( i = list.top; i >= 0; i--) {
+//         printf("%d, ", list.elems[i]);
+//     } 
     
+// }
+
+void visualize(List list) {
+    printf("\nIdx | Value\n");
+    for (int i = MAX - 1; i >= 0; i--) {
+        if (i < list.top) {
+            printf("%2d  | %d\n", i, list.elems[i]);
+        } else {
+            printf("%2d  | X\n", i);
+        }
+    }
+    printf("\n");
+}
+
+
+// ! for display, not allowed to traverse
+// ? The logic is to, print top, then pop the element,
+void display(List list) {
+
+    while (!isEmpty(list)) {
+        printf("%d " ,list.elems[list.top]);
+        pop(&list);
+    }
 }
