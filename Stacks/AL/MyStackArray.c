@@ -31,18 +31,20 @@ int main() {
     push(&list, 23);
     push(&list, 50);
     
+    
+    pop(&list);
     pop(&list);
     pop(&list);
     peek (list);
     
     
-    if (!isEmpty(list)) {
-        printf("It is not Empty!\n");
+    if (isEmpty(list)) {
+        printf("It is Empty!\n");
     } else {
-        printf("It is empty!\n");
+        printf("It is not empty!\n");
     }
    
-    if (!isFull(list)) {
+    if (isFull(list)) {
         printf("It is Full\n");
     } else {
         printf("It is not full\n");
@@ -63,7 +65,7 @@ void initStack (List *list) {
 bool push (List *list, Data elem) {
 
 
-    if (list->top == MAX) {
+    if (isFull(*list)) {
         return false;
     }
     
@@ -73,7 +75,9 @@ bool push (List *list, Data elem) {
 }
 
 bool pop (List *list) {
-    if (list->top == 0) {
+    if (isEmpty(*list)) { // ! *list, is just a pass by copy, just dereferemce, 
+        // ! make the helper function accept pointers.
+        // ! is u do &list, it is the address of the pointer, but the fucntion expects a List, not a **list
         return false;
     }
     
@@ -128,7 +132,13 @@ void visualize(List list) {
 void display(List list) {
 
     while (!isEmpty(list)) {
-        printf("%d " ,list.elems[list.top]);
-        pop(&list);
+        printf("%d " ,peek(list));
+        list.top--;
     }
 }
+
+// ! isEmpty and peek expect a list, while pop expects a List *, u are mixing styles
+// ! its best if u decide all the helpers to accept a one style of parameters
+
+// Either make all helpers 
+// accept pointers (List *) — then you always pass list without *list. 
