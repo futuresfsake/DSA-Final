@@ -1,0 +1,56 @@
+
+
+Why linked list representation?
+
+-use linked list when the size of the stack
+is not known in advance
+- no limitation on the number of nodes
+
+
+
+WHy should we prefer the begginning of the
+linked list as the top of the stack? 
+
+* push at the head (front of the linked list)
+* the new node becomes the top of the stack
+* this is O(1), because you do not need to travrese
+
+push(10) → [10] -> NULL   (top is 10)
+push(20) → [20] -> [10] -> NULL   (top is 20)
+push(30) → [30] -> [20] -> [10] -> NULL   (top is 30)
+
+
+
+X Push at the tail (end of the list)
+* You could insert at the tail, but then pop 
+
+Why we prefer adding and removing the first
+node of the linked list?
+
+Time complexity of adding a node at the beggining : O(1)
+Time complexity of removing the first node: O(1)
+
+Time complexity of adding a not at the end: 
+o(1)
+
+Removing the last node is O(n), because u will
+make traversal
+
+
+Basic idea on how to write a program for LL
+implementation of stack ? 
+
+push -> same as insertFront
+pop -> same as 
+
+
+* Stack Overflow occurs when there is no 
+space left to dynamically allocate the memory
+
+* stack underflow occurs when top is equal 
+to NULL
+
+// ! Is it a principle of a stack pop () 
+to return the deleted data after removing it?
+
+* pop should give you the element you removed
