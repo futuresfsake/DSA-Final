@@ -99,7 +99,7 @@ bool isFull (List list) {
 
 
 bool isEmpty (List list) {
-    return list.top == 0;
+    return list.top == -1;
 }
 
 

@@ -54,3 +54,23 @@ to NULL
 to return the deleted data after removing it?
 
 * pop should give you the element you removed
+
+
+
+Logic Of Displaying in LinkedList
+V
+v
+A. Make a temporary stack
+B. get the peek
+C. Pop
+D. then push to the temporary stack
+then pop from the temporary stack
+and push again from the original stack
+
+
+Logic Of Pop In LinkedList
+A. check if underflow
+B. save the value to return
+C. make a temp node to point to the top, Move the top pointer
+D. free the temp
+E. return the data

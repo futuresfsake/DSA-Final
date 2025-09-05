@@ -1,0 +1,20 @@
+
+
+Logic of Printing 
+--> peek, --> pop, --> push into another temporary Stack
+--> pop in the temp stack, --> then push back into the original stack
+
+
+Display Peek -> Pop -> Push temp stack
+1. get a catcher to get the peek
+2. pop the original stack
+3. push the value, pass the temporary stack and the catcher
+
+repeat until original is empty
+
+
+Temp Stack->pop-> Push
+2. perfom until temp is empty
+3. get a catcher to get the peek of temp stack
+4. Pop the temp stack
+5. push it to the original stack
