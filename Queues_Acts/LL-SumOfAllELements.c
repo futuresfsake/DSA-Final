@@ -158,3 +158,25 @@ void displayQueue(StudentQueue q) {
         curr = curr->next;
     }
 }
+
+
+int SumOfAllElements(StudentQueue*q) {
+    int count = 0;
+    StudentQueue tempQ;
+    initQueue(&tempQ);
+
+
+    Node *i = q->front;
+
+    while (i != NULL) {
+        
+      count+= i->data.grade.english;
+      count+=i->data.grade.math;
+      count+= i->data.grade.science;
+
+      i = i->next;
+    }
+
+    return count;
+
+}
