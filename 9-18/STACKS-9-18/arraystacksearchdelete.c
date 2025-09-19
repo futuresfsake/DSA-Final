@@ -22,6 +22,7 @@ typedef struct {
 typedef struct {
     Studtype StudArray[size];
     int count;
+    
 }StudList, *ListPtr;
 
 
