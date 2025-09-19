@@ -34,7 +34,9 @@ Studtype peek (StudList *s);
 Studtype pop(StudList *s);
 void displayStudList (StudList *s);
 bool deleteStud (StudList *s, int ID);
+void sortById(StudList *s);
 
+StudList filterStuds (StudList *s, char course[]) ;
 
 
 
@@ -90,7 +92,16 @@ if (deleteStud(&students, id)) {
 
 printf("\n\n----DISPLAYING----\n\n");
 displayStudList(&students);
-    
+
+printf("\n--Sort Students BY ID --\n");
+sortById(&students);
+displayStudList(&students);
+
+
+
+    printf("--Filtering Students--\n");
+    StudList newStuds = filterStuds(&students, "BSIT");
+    displayStudList(&newStuds);
 
 }
 
@@ -197,3 +208,47 @@ bool deleteStud (StudList *s, int ID) {
 }
 
 
+
+void sortById(StudList *s) {
+    
+    StudList tempStack;
+    initialize(&tempStack);
+
+
+    while (!isEmpty(s)) {
+        Studtype curr = pop(s);
+
+
+        while (!isEmpty(&tempStack) && peek(&tempStack).ID < curr.ID) {
+            push(s, pop(&tempStack));
+        }
+
+        push (&tempStack, curr);
+    }
+
+
+    while (!isEmpty(&tempStack)) {
+        push(s, pop(&tempStack));
+    }
+
+    
+
+}
+
+StudList filterStuds (StudList *s, char course[]) {
+
+    StudList temp;
+    initialize(&temp);
+
+
+    while (!isEmpty(s)) {
+        Studtype stud = pop(s);
+        if (strcmp(stud.Course, course) == 0) {
+            push(&temp, stud);
+        } 
+
+    }
+
+   
+    return temp;
+}
