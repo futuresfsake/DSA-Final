@@ -105,7 +105,7 @@ void pushSorted(Stack *s, Product p) {
     while (!isEmpty(s)) {
         Product pp = pop(s);
         
-        if (!insert &&  p.prodQty > pp.prodQty) {
+        while (!insert &&  p.prodQty > pp.prodQty) {
             push(&temp, p);
             insert = true;
         } 
