@@ -135,7 +135,7 @@ void enqueueSorted(ProductQueue *q, Product p) {
    while (!isEmpty(q)) {
        Product pp = dequeue(q);
        
-       if (!flag && p.prodQty < pp.prodQty) {
+       if (!flag && p.prodQty > pp.prodQty) {
            enqueue(&qq, p);
            flag = true;
        } 
