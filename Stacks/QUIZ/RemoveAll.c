@@ -29,14 +29,14 @@ int main() {
     push(&mystack, 20);
     push(&mystack, 30);
 
-    // printf("Top element: %d\n", peek(&mystack));
+    printf("Top element: %d\n", peek(&mystack));
 
-    // printf("Stack contents:\n");
-    // display(&mystack);
+    printf("Stack contents:\n");
+    display(&mystack);
 
-    // printf("Popped: %d\n", pop(&mystack));
-    // printf("Stack after pop:\n");
-    // display(&mystack);
+    printf("Popped: %d\n", pop(&mystack));
+    printf("Stack after pop:\n");
+    display(&mystack);
 
     // 👉 you will implement removeAll(&mystack);
     removeAll(&mystack);
