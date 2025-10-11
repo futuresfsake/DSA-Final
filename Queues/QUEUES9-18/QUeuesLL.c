@@ -71,31 +71,33 @@ void enqueue(ProductQueue *q, Product p) {
 
 
  Product dequeue(ProductQueue *q) {
+   
+
     if (isEmpty(q)) {
-        printf("Queue underflow!\n");
         exit(1);
     }
 
-   Product p;
-   NodePtr remove;
+    NodePtr toRemove;
+    Product p;
 
-   if (q->front == q->rear) {
-    remove = q->front;
-    p = remove->prod;
-    q->front = NULL;
-    q->rear = NULL;
-    free(remove);
-   
-   } else {
+    if (q->front == q->rear) {
+       
+        toRemove= q->front;
+        p = toRemove->prod;
+        q->front = NULL;
+        q->rear = NULL;
+        free(toRemove);
 
-    remove = q->front;
-    p = remove->prod;
-    q->front = remove->next;
-    free(remove);
-   }
 
-   q->size--;
-   return p;
+    } else {
+         toRemove = q->front;
+        q->front = toRemove->next;
+        p = toRemove->prod;
+        free(toRemove);
+      
+    }
+      q->size--;
+        return p;
 }
 
 
@@ -126,21 +128,21 @@ void displayQueue(ProductQueue *q) {
 
 int searchProductByID(ProductQueue *q, int id) {
  ProductQueue temp;
-    initializeQueue(&temp);
 
-    int pid = 0;
+ initializeQueue(&temp);
+ int pid = -1;
+
+
     while (!isEmpty(q)) {
         Product p = dequeue(q);
         if (p.prodID == id) {
             pid = p.prodID;
-
-        }
+        } 
         enqueue(&temp, p);
     }
 
     while (!isEmpty(&temp)) {
         enqueue(q, dequeue(&temp));
-
     }
     return pid;
 
@@ -150,29 +152,30 @@ void pushSorted(ProductQueue *q, Product p) {
 
     ProductQueue temp;
     initializeQueue(&temp);
-
     bool insert = false;
 
-    
 
     while (!isEmpty(q)) {
-        Product pp = dequeue(q);
+        Product curr = dequeue(q);
 
-        if   (!insert && p.prodQty > pp.prodQty) {
+        if (!insert && p.prodQty > curr.prodQty) {
             enqueue(&temp, p);
             insert = true;
-        } 
-        enqueue(&temp,pp);
+
+        }  
+            enqueue(&temp, curr);
+        
     }
+
 
     if (!insert) {
         enqueue(&temp, p);
     }
-
-
     while (!isEmpty(&temp)) {
         enqueue(q, dequeue(&temp));
     }
+
+ 
 }
 
 
@@ -224,40 +227,47 @@ int main() {
 
     printf("\n-----------------------------\n");
     printf("New Queue (limit = 150 total qty):\n");
-    ProductQueue limited = AddBasedOnQuantity(&inventory, 100);
+    ProductQueue limited = AddBasedOnQuantity(&inventory, 300);
     displayQueue(&limited);
 
     return 0;
 }
 
 ProductQueue AddBasedOnQuantity(ProductQueue *q, int limit) {
-
-    ProductQueue temp, dest;
+    ProductQueue temp;
+    ProductQueue orig;
     initializeQueue(&temp);
-    initializeQueue(&dest);
+    initializeQueue(&orig);
+
     int totalQty = 0;
 
-
     while (!isEmpty(q)) {
-
+        
         Product p = dequeue(q);
-        printf("Adding: %s .....", p.prodName);
+        printf("Adding %s...", p.prodName);
 
-        if (totalQty + p.prodQty <= limit) {
-            enqueue(&temp, p);
+        if (totalQty+p.prodQty <= limit) {
+            enqueue(&orig, p);
             totalQty+= p.prodQty;
             printf("Success!\n");
+            
+
         } else {
             printf("Failed...\n");
         }
 
-        enqueue(&dest, p);
+        enqueue(&temp, p);
     }
 
 
-    while (!isEmpty(&dest)) {
-        enqueue(q, dequeue(&dest));
+    while (!isEmpty(&temp)) {
+        enqueue(q, dequeue(&temp));
     }
 
-    return temp;
+
+
+    return orig;
+
+   
+
 }

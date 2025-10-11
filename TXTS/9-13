@@ -1,0 +1,9 @@
+Sentinel Values
+
+ Using a sentinel value (-1 trick)
+
+ * For finding min/max in non-empty collections, 
+ not using sentinel value is safe and standard,
+
+
+ * For search problems (like cheapest available room, Room with ID), where some elements are disqualified, a sentinel is more convenient, since the first few items may not be valid;
