@@ -1,6 +1,6 @@
 // ! creates a dictionary store student grades using open hashing
 
-
+// ! very simple dictionary, no pointer to pointer node
 
 #include <stdio.h>
 #include <string.h>
