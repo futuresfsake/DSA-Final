@@ -44,7 +44,7 @@ int HashFunction(int id, char Name[]);
 void MakeNull (DICTIONARY* Dict);
 void Insert(DICTIONARY* dict, Product P);
 bool Remove(DICTIONARY* dict, int id, char name[]);
-bool IsMember(DICTIONARY* dict, int id);
+bool IsMember(DICTIONARY* dict, int id, char name[]);
 void Display(DICTIONARY dict);
 
 
@@ -82,8 +82,15 @@ int main() {
 
      Display(dict);
 
+    bool isAMember = IsMember(&dict, 1003, "Tae");
+    if (isAMember  == 1) {
+        printf("Product is existing.\n");
+    } else {
+        printf("Product not found.\n");
 
     
+}
+
 }
 
 
@@ -183,5 +190,19 @@ void Display(DICTIONARY dict) {
 
 
 
+bool IsMember(DICTIONARY* dict, int id, char name[]) {
+
+    int index = HashFunction(id, name);
+
+    ProductPtr* temp = &(*dict)[index];
+
+    for(; *temp != NULL; temp = &(*temp)->next) {
+        if (strcmp((*temp)->product.name, name)==0 && (*temp)->product.id == id) {
+            return true;
+        }
+    }
+
+    return false;
+}
 
 
