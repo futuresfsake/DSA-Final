@@ -73,8 +73,8 @@ int main() {
     Display(dict);
 
 
-    bool res = Remove(&dict,1006, "Cereal"); // ! pass the address of dict
-    if (res) {
+    bool res = Remove(&dict,10021, "Cereal"); // ! pass the address of dict
+    if (res  == 1) {
         printf("Product is successfully removed.\n");
     } else {
         printf("Product not found.\n");
@@ -151,12 +151,12 @@ bool Remove(DICTIONARY* dict, int id, char name[]) {
             *temp = toRemove->next;
             printf("%d - %s deleting...\n", toRemove->product.id, toRemove->product.name);
             free(toRemove);
-            return 1;
+            return true;
 
         }
    }
    printf("ID: %d & Name: %s is not found...\n", id, name);
-   return -1;
+   return false;
 }
 void Display(DICTIONARY dict) {
     printf("Product Info:\n");
