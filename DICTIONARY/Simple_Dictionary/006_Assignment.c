@@ -44,9 +44,8 @@ int HashFunction(int id, char Name[]);
 void MakeNull (DICTIONARY* Dict);
 void Insert(DICTIONARY* dict, Product P);
 bool Remove(DICTIONARY* dict, int id, char name[]);
-// bool IsMember(DICTIONARY* dict, int id);
+bool IsMember(DICTIONARY* dict, int id);
 void Display(DICTIONARY dict);
-// Product createProduct(int day, int month, int year, int id, char name[], float price, int quantity);
 
 
 int main() {
@@ -159,7 +158,6 @@ bool Remove(DICTIONARY* dict, int id, char name[]) {
    printf("ID: %d & Name: %s is not found...\n", id, name);
    return -1;
 }
-// bool IsMember(DICTIONARY* dict, int id);
 void Display(DICTIONARY dict) {
     printf("Product Info:\n");
 
