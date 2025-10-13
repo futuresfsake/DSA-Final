@@ -43,7 +43,7 @@ void initDictionary(DICTIONARY dict);
 int HashFunction(int id, char Name[]);
 void MakeNull (DICTIONARY* Dict);
 void Insert(DICTIONARY* dict, Product P);
-// void Remove(DICTIONARY* dict, int id);
+bool Remove(DICTIONARY* dict, int id, char name[]);
 // bool IsMember(DICTIONARY* dict, int id);
 void Display(DICTIONARY dict);
 // Product createProduct(int day, int month, int year, int id, char name[], float price, int quantity);
@@ -72,6 +72,18 @@ int main() {
     }
 
     Display(dict);
+
+
+    bool res = Remove(&dict,1006, "Cereal"); // ! pass the address of dict
+    if (res) {
+        printf("Product is successfully removed.\n");
+    } else {
+        printf("Product not found.\n");
+    }
+
+     Display(dict);
+
+
     
 }
 
@@ -128,7 +140,25 @@ void Insert(DICTIONARY* dict, Product P) {
 }
 
 
-// void Remove(DICTIONARY* dict, int id);
+bool Remove(DICTIONARY* dict, int id, char name[]) {
+    int index = HashFunction(id, name);
+
+    ProductPtr* temp = &(*dict)[index];
+
+    
+   for(; *temp != NULL; temp = &(*temp)->next) {
+        if ((*temp)->product.id == id && strcmp((*temp)->product.name, name)==0)  {
+            ProductPtr toRemove = *temp;
+            *temp = toRemove->next;
+            printf("%d - %s deleting...\n", toRemove->product.id, toRemove->product.name);
+            free(toRemove);
+            return 1;
+
+        }
+   }
+   printf("ID: %d & Name: %s is not found...\n", id, name);
+   return -1;
+}
 // bool IsMember(DICTIONARY* dict, int id);
 void Display(DICTIONARY dict) {
     printf("Product Info:\n");
