@@ -14,25 +14,131 @@ typedef struct {
     int count;  // number of elements
 } Set;
 
+
+
+
 // Initialize the set
-void makeNull(Set *s);
+void makeNull(Set *s) {
+
+        s->count = 0;
+}
 
 // Check if x is already in the set
-bool isMember(Set *s, int x);
+bool isMember(Set *s, int x) {
+    
+    for(int i = 0; i < s->count; i++) {
+        if (x == s->content[i]) {
+            return true;
+        }
+    }
+    return false;
+}
 
 // Insert x into the set only if not already present (UID)
-void insert(Set *s, int x);
+void insert(Set *s, int x) {
+    if (isMember(s, x)) {
+        printf("Value %d already exists.\n", x);
+        return; 
+}
+
+    s->content[s->count++] = x;
+}
 
 // Display all elements in the set
-void display(Set *s);
+void display(Set *s) {
+    for(int i = 0; i < s->count; i++) {
+        printf("%d ", s->content[i]);
+    }
+}
 
-// Set operations
-Set setUnion(Set *A, Set *B);
-Set setIntersection(Set *A, Set *B);
-Set setDifference(Set *A, Set *B);
+// // Set operations
+Set setUnion(Set *A, Set *B) {
+    Set unionSet;
+    unionSet.count = 0;
+
+    int a = 0;
+    int b = 0; 
+
+  
+
+    
+    while (a < A->count && b < B->count) {
+        if (A->content[a] < B->content[b]) {
+            unionSet.content[unionSet.count++] = A->content[a++];
+            
+        } else if (A->content[a] > B->content[b]) {
+            unionSet.content[unionSet.count++] = B->content[b++];
+           
+        } else if (A->content[a] == B->content[b]) {
+            unionSet.content[unionSet.count++] = A->content[a++];
+            b++;
+            
+        }
+    }
+
+    while (a < A->count) {
+        unionSet.content[unionSet.count++] = A->content[a++];
+        
+    }
+
+    while (b < B->count) {
+        unionSet.content[unionSet.count++] = B->content[b++];
+        
+    }
+return unionSet;
+    
+}
+Set setIntersection(Set *A, Set *B) {
+
+    Set C;
+    C.count = 0;
+    int a = 0;
+    int b = 0;
+
+    while (a < A->count && b < B->count) {
+        if (A->content[a] < B->content[b]) {
+            a++;
+        } else if (A->content[a] > B->content[b]) {
+            b++;
+        } else if (A->content[a] == B->content[b]) {
+            C.content[C.count++] = A->content[a];
+            a++;
+            b++;
+        }
+    }
+
+    return C;
+}
+
+
+Set setDifference(Set *A, Set *B) {
+    Set C;
+    C.count = 0;
+    int a = 0;
+    int b = 0;
+
+    while (a < A->count && b < B->count) {
+        if (A->content[a] < B->content[b]) {
+            C.content[C.count++] = A->content[a++];
+            
+        } else if (A->content[a] > B->content[b]) {
+            b++;
+        } else if (A->content[a] == B->content[b]) {
+            a++;
+            b++;
+        }
+    }
+
+
+    while (a < A->count) {
+        C.content[C.count++] = A->content[a];
+        a++;
+    }
+    return C;
+}
 
 int main() {
-    Set chessClub, dramaClub, result;
+    Set chessClub, dramaClub, result, result1;
 
     makeNull(&chessClub);
     makeNull(&dramaClub);
@@ -55,16 +161,16 @@ int main() {
 
     // Practice: compute union, intersection, difference
     result = setUnion(&chessClub, &dramaClub);
-    printf("Union: ");
+    printf("\nUnion: ");
     display(&result);
 
-    result = setIntersection(&chessClub, &dramaClub);
-    printf("Intersection: ");
-    display(&result);
+    result1 = setIntersection(&chessClub, &dramaClub);
+    printf("\nIntersection: ");
+    display(&result1);
 
-    result = setDifference(&chessClub, &dramaClub);
+    Set result2 = setDifference(&chessClub, &dramaClub);
     printf("Chess - Drama: ");
-    display(&result);
+    display(&result2);
 
     return 0;
 }
