@@ -64,12 +64,13 @@ int countYesAnswers(BitVect profile) {
 }
 
 
+// ! sample output, it should be reversed like the 8 bit 128, 64, 32, 16, 8, 4, 2, 1, 0 
 
 void printAnswers(BitVect profile) {
     // TODO: Print all answers as binary (0/1)
 
     printf("{ ");
-    for(int i = 0; i< 10; i++) {
+    for(int i = 9; i >= 0; i--) {
         printf("%d, ", profile.answers[i]);
         
     }
@@ -159,18 +160,17 @@ int main() {
     BitVect inie = {0}; // ! this is already a form of initializing, all fields are 0
     BitVect jobo = {0};
 
-    setAnswer(&inie, 0, 1);
-    setAnswer(&inie, 1, 1);
-    setAnswer(&inie, 3, 1);
-    setAnswer(&inie, 5, 1);
-    setAnswer(&inie, 8, 1);
-
-    setAnswer(&jobo, 0, 1);
-    setAnswer(&jobo, 2, 1);
-    setAnswer(&jobo, 4, 1);
-    setAnswer(&jobo, 5, 1);
-    setAnswer(&jobo, 6, 1);
-    setAnswer(&jobo, 7, 1);
+   setAnswer(&inie, 0, 1); // Q1: Yes
+    setAnswer(&inie, 1, 1); // Q2: Yes
+    setAnswer(&inie, 3, 1); // Q4: Yes
+    setAnswer(&inie, 5, 1); // Q6: Yes
+    setAnswer(&inie, 8, 1); // Q9: Yes
+    setAnswer(&jobo, 0, 1); // Q1: Yes
+    setAnswer(&jobo, 2, 1); // Q3: Yes
+    setAnswer(&jobo, 4, 1); // Q5: Yes
+    setAnswer(&jobo, 5, 1); // Q6: Yes
+    setAnswer(&jobo, 6, 1); // Q7: Yes
+    setAnswer(&jobo, 7, 1); // Q8: Yes
 
     printf("Inie's answers: ");
     printAnswers(inie);
