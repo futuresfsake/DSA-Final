@@ -1,0 +1,55 @@
+
+
+1. Open hashing - closed addressing
+2. Closed hashing - open addresing
+
+searching techniques
+is linear search or binary search
+0(n) - linear, n is the number of data
+O(logn) - binary
+
+
+
+A technique that has a constant time, which is hashing
+where we use hash table or hash function
+
+
+Hash function, we calculate some hash value, 
+that address we can store that key
+
+
+
+Collission means, when the hash value 
+appears more than one time. 
+
+Hash function, division, folding method, mid square method, module multiplation method
+
+
+to resolve collisions
+
+you cannot remove collision, you can only minimize 
+
+for open hashing
+- its called chaining method. 
+
+for closed hashing 
+- linear probing
+- Quadratic probing
+- Double hashing
+
+
+
+
+Hash function
+division method
+
+H(k) = k % M where m is the size of the array
+
+
+* probing means is synonym searching, 
+search the free place
+
+
+insert Ki at first free location from (u + i) % m, where i = 0 to (m-1)
+u is the location'
+
