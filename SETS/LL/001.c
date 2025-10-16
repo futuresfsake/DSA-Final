@@ -2,7 +2,7 @@
 // ! this is just unsorted insertion
 // ! we assume that the set is unsorted
 // ! no duplicates allowed, insert implementation prevents duplciates
-// ! dynamic memory allocation
+// ! dynamic
 
 
 #include <stdio.h>
@@ -33,10 +33,10 @@ int main() {
     SET B = CreateSet();
 
     // Insert elements into Set A
-    insertSet(&A, 9);
+    insertSet(&A, 122);
     insertSet(&A, 10);
     insertSet(&A, 8);
-    insertSet(&A, 9);   // duplicate — should be ignored
+    insertSet(&A, 12);   // duplicate — should be ignored
 
     // Insert elements into Set B
     insertSet(&B, 10);
@@ -159,42 +159,54 @@ void displaySet(SET A) {
     
 }
 
-
+ // ! unsortred
 // ! this assumes that the set is not sorted
-void insertSet(SET *A, int elem) {
-    // Purpose: Insert a new element into the set in sorted order,
-    //           ensuring no duplicate elements are inserted.
+// void insertSet(SET *A, int elem) {
+//     // Purpose: Insert a new element into the set in sorted order,
+//     //           ensuring no duplicate elements are inserted.
 
-    bool found = false;
-    NodePtr temp = *A;
+//     bool found = false;
+//     NodePtr temp = *A;
 
-    while (temp != NULL) {
-        if ((temp)->data == elem) {
-            printf("%d already exists!.\n", elem);
-            found = true;
-            break; // ! put a break, so it will stop looping
-        }
-        temp = (temp)->link;
-    }
+//     while (temp != NULL) {
+//         if ((temp)->data == elem) {
+//             printf("%d already exists!.\n", elem);
+//             found = true;
+//             break; // ! put a break, so it will stop looping
+//         }
+//         temp = (temp)->link;
+//     }
 
 
-        if (!found) {
-    NodePtr newNode = malloc(sizeof(Node));
-    if (!newNode) {
-        printf("Dynamic Memory allocation failed.\n");
-        exit(1);
-    }
+//         if (!found) {
+//     NodePtr newNode = malloc(sizeof(Node));
+//     if (!newNode) {
+//         printf("Dynamic Memory allocation failed.\n");
+//         exit(1);
+//     }
 
-    newNode->data = elem;
-    newNode->link = (*A); // ? do not forget to link the first node of the list, and update the original set
-    *A = newNode; // ! update the head
+//     newNode->data = elem;
+//     newNode->link = (*A); // ? do not forget to link the first node of the list, and update the original set
+//     *A = newNode; // ! update the head
 
-    printf("%d Successfully inserted.\n" ,elem);
+//     printf("%d Successfully inserted.\n" ,elem);
     
-}
-}
+// }
+// }
 
+// ! sorted
 
+void insertSet(SET *A, int elem) {
+
+  NodePtr *pp;
+    for (pp = A; *pp != NULL && (*pp)->data < elem; pp = &(*pp)->link) { /* advance */ }
+    if (*pp != NULL && (*pp)->data == elem) return;                // dup
+    NodePtr n = malloc(sizeof *n);
+    if (!n) return;
+    n->data = elem;
+    n->link = *pp;
+    *pp = n;
+   }
 // SET intersectSet(SET A, SET B) {
 //     // Purpose: Return a new set that contains only the elements 
 //     //           that are common between sets A and B.
@@ -241,41 +253,80 @@ void insertSet(SET *A, int elem) {
 
 // }
 
+
 SET intersectSet(SET A, SET B) {
-    // Purpose: Return a new set that contains only the elements 
-    //           that are common between sets A and B.
+    NodePtr pa = A, pb = B;
+    SET C = NULL;          // result head
+    NodePtr tail = NULL;   // single-pointer tail
 
-    SET newSet = CreateSet();
-    NodePtr forA = A;
-    NodePtr forB;
+    while (pa && pb) {
+        if (pa->data == pb->data) {
+            int v = pa->data;
 
-    while (forA != NULL) {
-        bool found = false;  // reset for each A node
-        forB = B;            // reset B to head for each new A
+            NodePtr n = (NodePtr)malloc(sizeof *n);
+            if (!n) return C;          // OOM: return what we have
+            n->data = v;
+            n->link = NULL;
 
-        while (forB != NULL) {
-            if (forA->data == forB->data) {
-                found = true;
-                break; // match found, no need to continue inner loop
+            if (C == NULL) {           // first node special-case
+                C = n;
+                tail = n;
+            } else {                    // append in O(1)
+                tail->link = n;
+                tail = n;
             }
-            forB = forB->link;
-        }
 
-        if (found) {
-            // Insert into new set
-            NodePtr newNode = malloc(sizeof(Node));
-            newNode->data = forA->data;
-            newNode->link = newSet;
-            newSet = newNode;
-        }
+            while (pa && pa->data == v) pa = pa->link;  // skip dups in A
+            while (pb && pb->data == v) pb = pb->link;  // skip dups in B
 
-        forA = forA->link;
+        } else if (pa->data < pb->data) {
+            int skip = pa->data; while (pa && pa->data == skip) pa = pa->link;
+        } else {
+            int skip = pb->data; while (pb && pb->data == skip) pb = pb->link;
+        }
     }
-
-    return newSet;
-
-
+    return C;  // last node already has link = NULL
 }
+
+
+// SET intersectSet(SET A, SET B) {
+//     // Purpose: Return a new set that contains only the elements 
+//     //           that are common between sets A and B.
+
+//     SET newSet = CreateSet();
+//     NodePtr forA = A;
+//     NodePtr forB;
+
+//     while (forA != NULL) {
+//         bool found = false;  // reset for each A node
+//         forB = B;            // reset B to head for each new A
+
+//         while (forB != NULL) {
+//             if (forA->data == forB->data) {
+//                 found = true;
+//                 break; // match found, no need to continue inner loop
+//             }
+//             forB = forB->link;
+//         }
+
+//         if (found) {
+//             // Insert into new set
+//             NodePtr newNode = malloc(sizeof(Node));
+//             newNode->data = forA->data;
+//             newNode->link = newSet;
+//             newSet = newNode;
+//         }
+
+//         forA = forA->link;
+//     }
+
+//     return newSet;
+
+
+// }
+
+
+
 
 SET unionSet(SET A, SET B) {
     // Purpose: Return a new set that contains all unique elements 
