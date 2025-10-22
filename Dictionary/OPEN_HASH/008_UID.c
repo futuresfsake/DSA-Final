@@ -102,7 +102,7 @@ void insert(Dictionary *D, char *key, int value) {
     bool flag = false;
 
 
-    for(int i = 0; i < TABLE_SIZE; i++) {
+    
         Node* temp = (D)->table[index];
 
         while (temp != NULL) {
@@ -122,7 +122,7 @@ void insert(Dictionary *D, char *key, int value) {
         printf("Successfully Inserted!\n");
         }
         
-    }
+    
 }
 
 // Search for a key
