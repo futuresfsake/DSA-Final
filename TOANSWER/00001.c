@@ -78,13 +78,15 @@ int main() {
     // display(&S);
 
     // // Cleanup
-    // freeDictionary(&A);
-    // freeDictionary(&B);
-    // freeDictionary(&U);
-    // freeDictionary(&I);
-    // freeDictionary(&D);
+    freeDictionary(&A);
+    freeDictionary(&B);
+    freeDictionary(&U);
+    freeDictionary(&I);
+    freeDictionary(&D);
     // freeDictionary(&S);
 
+    printf("Proof that my free function works SET A");
+    display(&A);
     // return 0;
 }
 
