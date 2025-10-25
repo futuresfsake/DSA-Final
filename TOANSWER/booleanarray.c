@@ -3,13 +3,15 @@
 #include <stdlib.h>
 #include <limits.h>
 
-// Structure to represent a Boolean array
+#define MAX 10
+// === STRUCT DEFINITION ===
 typedef struct {
-    bool *arr;      // Pointer to the array
-    int size;       // Size of the array
+    bool *arr;   // Pointer to boolean array
+    int size;    // Size of the array
 } BoolArray;
 
-// Function prototypes
+
+// === FUNCTION DECLARATIONS ===
 void initArray(BoolArray *set, int size);
 void setBit(BoolArray *set, int index);
 void removeBit(BoolArray *set, int index);
@@ -25,232 +27,269 @@ int findMin(BoolArray *set);
 int findMax(BoolArray *set);
 
 
+void display(BoolArray *set) {
+
+    for(int i = 0; i < MAX; i++) {
+        if (set->arr[i] == 1) {
+        printf("%d ", i );
+    }
+}
+}
 int main() {
-    // Create two sets
-    BoolArray set1, set2;
-    initArray(&set1, 10);
-    initArray(&set2, 8);
+    BoolArray setA, setB, U, D, I, AD;
 
-    // Test the functions by manipulating the sets
-    setBit(&set1, 2);
-    setBit(&set1, 0);
-    setBit(&set1, 7);
-    setBit(&set1, 9);
-    setBit(&set1, 4);
-    setBit(&set1, 1);
-    
+    // Initialize
+    initArray(&setA, 10);
+    initArray(&setB, 10);
 
-    setBit(&set2, 3);
-    setBit(&set2, 4);
-    setBit(&set2, 3);
-    setBit(&set2, 2);
-    setBit(&set1, 5);
-    
-    
-    
+    // Fill Set A: {2, 4, 7}
+    setBit(&setA, 2);
+    setBit(&setA, 4);
+    setBit(&setA, 7);
 
-    // Test equality of the sets
-    printf("Set 1 and Set 2 are equal: %d\n", isEqual(&set1, &set2));
+    // Fill Set B: {4, 6, 8}
+    setBit(&setB, 4);
+    setBit(&setB, 6);
+    setBit(&setB, 8);
 
-    // Test union operation
-    BoolArray unionResult = unionSets(&set1, &set2);
-    printf("Union of Set 1 and Set 2: ");
-    for (int i = 0; i < unionResult.size; i++) {
-        printf("%d ", unionResult.arr[i]);
-    }
+    printf("\n--- SET CONTENTS ---\n");
+    printf("Set A: ");
+    for (int i = 0; i < 10; i++) if (setA.arr[i]) printf("%d ", i);
+    printf("\nSet B: ");
+    for (int i = 0; i < 10; i++) if (setB.arr[i]) printf("%d ", i);
     printf("\n");
 
-    // Test difference operation
-    BoolArray diffResult = differenceSets(&set1, &set2);
-    printf("Difference of Set 1 and Set 2: ");
-    for (int i = 0; i < diffResult.size; i++) {
-        printf("%d ", diffResult.arr[i]);
-    }
+    // === OPERATIONS ===
+    printf("\n--- UNION ---\n");
+    U = unionSets(&setA, &setB);
+    printf("A union B = "); display(&U);
+   
+
+    printf("\n--- DIFFERENCE ---\n");
+    D = differenceSets(&setA, &setB);
+    printf("A & B = "); display(&D);
+
+    printf("\n--- INTERSECTION ---\n");
+    I = intersectSets(&setA, &setB);
+    printf("A ∩ B = "); display(&I);
+
+    printf("\n--- ASYMMETRIC DIFFERENCE ---\n");
+    AD = asymmetricDifferenceSets(&setA, &setB);
+    printf("AsymDiff (A not in B) = "); display(&AD);
+
+    printf("\n--- SUBSET & EQUALITY ---\n");
+    printf("Is A subset of B? %s\n", isSubset(&setA, &setB) ? "TRUE" : "FALSE");
+    printf("Are A and B equal? %s\n", isEqual(&setA, &setB) ? "TRUE" : "FALSE");
+
+    printf("\n--- MIN & MAX ---\n");
+    printf("Min of A: %d\n", findMin(&setA));
+    printf("Max of A: %d\n", findMax(&setA));
+    printf("Min of B: %d\n", findMin(&setB));
+    printf("Max of B: %d\n", findMax(&setB));
+
+    printf("\n--- REMOVE TEST ---\n");
+    removeBit(&setA, 4);
+    printf("After removing 4 from A: ");
+    for (int i = 0; i < 10; i++) if (setA.arr[i]) printf("%d ", i);
     printf("\n");
 
-    // Test intersection operation
-    BoolArray intersectResult = intersectSets(&set1, &set2);
-    printf("Intersection of Set 1 and Set 2: ");
-    for (int i = 0; i < intersectResult.size; i++) {
-        printf("%d ", intersectResult.arr[i]);
-    }
-    printf("\n");
+    printf("\n--- makeNULL TEST ---\n");
+    makeNULL(&setB);
+    printf("After makeNULL on B: ");
+    for (int i = 0; i < 10; i++) if (setB.arr[i]) printf("%d ", i);
+    printf("[should be empty]\n");
 
-    // Test asymmetric difference operation
-    BoolArray asymDiffResult = asymmetricDifferenceSets(&set1, &set2);
-    printf("Asymmetric Difference of Set 1 and Set 2: ");
-    for (int i = 0; i < asymDiffResult.size; i++) {
-        printf("%d ", asymDiffResult.arr[i]);
-    }
-    printf("\n");
-
-    // Test subset check
-    printf("Set 1 is a subset of Set 2: %d\n", isSubset(&set1, &set2));
-
-    // Test finding the minimum and maximum
-    printf("Min index in Set 1: %d\n", findMin(&set1));
-    printf("Max index in Set 1: %d\n", findMax(&set1));
-
-    // Clean up
-  
     return 0;
 }
 
 
 
+// === FUNCTION DEFINITIONS ===
+// Implement these yourself ↓↓↓
+
 void initArray(BoolArray *set, int size) {
-    set->arr = malloc(sizeof(bool));
-    set->size = size;
-    for(int i = 0; i < set->size; i++) {
-        set->arr[i] = 0;
+    // TODO: Allocate memory for 'arr' and initialize elements to 0
+    set->arr = malloc(size * sizeof(bool));
+
+    for(int i = 0; i < MAX; i++) {
+        set->arr[i] = false;
     }
+    set->size = 0;
     
- 
+
 }
 
-
 void setBit(BoolArray *set, int index) {
+    // TODO: Mark index as member of the set
 
-   
-    if (index>=0 && index < set->size) {
-        set->arr[index] = 1;
-    
+    if (index >= 0 && index < MAX) {
+        set->arr[index]  = 1;
     }
+    set->size++;
 }
 
 void removeBit(BoolArray *set, int index) {
-    if (index > 0 && index <  set->size) {
+    // TODO: Remove index from the set
+
+    if (index >= 0 && index < MAX) {
         set->arr[index] = 0;
     }
+    set->size--;
 }
 
-
 bool isMember(BoolArray *set, int index) {
+    // TODO: Return true if index is present
 
-    if (index >0 && index < set->size) {
-    return set->arr[index];
-    }
+    if (index>=0 && index < MAX) 
+         return set->arr[index] ? 1 : 0;
+    
+    
 }
 
 void makeNULL(BoolArray *set) {
-    for(int i = 0; i < set->size; i++) {
-        set->arr[i] =0;
-        
-    }
-    set->size = 0;
-}
+    // TODO: Reset all bits to 0 and clear size if needed
+    for(int i = 0; i < MAX; i++) {
+        set->arr[i] = 0;
 
+    }
+}
 
 BoolArray unionSets(BoolArray *set1, BoolArray *set2) {
-    int max = (set1->size > set2->size) ? set1->size : set2->size;
-    BoolArray newSet;
-    initArray(&newSet, max);
+    // TODO: Return union of two sets
+    BoolArray result;
+    
+    initArray(&result, MAX);
 
-    for(int i = 0; i < max; i++) {
+    for(int i = 0; i < MAX; i++) {
         int a = set1->arr[i];
         int b = set2->arr[i];
 
-        newSet.arr[i] = a | b;
-    }
-    return newSet;
-}
 
+        result.arr[i] = a | b;
+    }
+
+
+    return result;
+}
 
 BoolArray differenceSets(BoolArray *set1, BoolArray *set2) {
-    int max = (set1->size > set2->size) ? set1->size : set2->size;
-    BoolArray newSet;
-    initArray(&newSet, max);
+    // TODO: Return difference (A - B)
+    BoolArray result;
+   
+    initArray(&result, MAX);
 
-    for(int i = 0; i < max; i++) {
+    for(int i = 0; i < MAX; i++) {
         int a = set1->arr[i];
         int b = set2->arr[i];
+       
 
-        newSet.arr[i] = a & (~b);
+        result.arr[i] = a & ~b ;
     }
-    return newSet;
+    return result;
 }
 
-
 BoolArray intersectSets(BoolArray *set1, BoolArray *set2) {
-    int max = (set1->size > set2->size) ? set1->size : set2->size;
-    BoolArray newSet;
-    initArray(&newSet, max);
+    // TODO: Return intersection of sets
+    BoolArray result;
+  
+    initArray(&result, MAX);
 
-    for(int i = 0; i < max ; i++) {
+
+    for(int i  = 0; i < MAX; i++) {
+        
         int a = set1->arr[i];
         int b = set2->arr[i];
-        
-        newSet.arr[i] = a & b;
+
+        result.arr[i] = a & b;
     }
-    return newSet;    
+    return result;
 }
 
 BoolArray asymmetricDifferenceSets(BoolArray *set1, BoolArray *set2) {
-    int max = (set1->size > set2->size) ? set1->size : set2->size;
-    BoolArray newSet;
-    initArray(&newSet, max);
+    // TODO: Return elements in A not in B
+    BoolArray result;
 
-    for(int i = 0; i < max; i++) {
+    initArray(&result, MAX);
+
+
+    for(int i  = 0; i < MAX; i++) {
+        
         int a = set1->arr[i];
         int b = set2->arr[i];
 
-        if (a == 1 && b ==0) {
 
-
-        newSet.arr[i] = a;
-        }
+        
+        result.arr[i] = a & !b;
     }
 
-    return newSet;
+
+    return result;
+
 }
+
 
 
 bool isSubset(BoolArray *set1, BoolArray *set2) {
+    // TODO: Return true if set1 ⊆ set2
 
-    if (set2->size<set1->size) {
+    if (set1->size > set2->size) {
         return false;
     }
 
-    int max = (set1->size > set2->size) ? set1->size : set2->size;
+    int size = (set1->size> set2->size) ? set1->size : set2->size;
 
-    for(int i = 0; i < max; i++) {
+
+    for(int i = 0; i < size; i++) {
         if (set1->arr[i] != set2->arr[i]) {
             return false;
         }
-        
-    }
-    return true;
-}
 
+    }
+        return true;
+    
+    
+}
 
 bool isEqual(BoolArray *set1, BoolArray *set2) {
+    // TODO: Return true if both sets are equal
     if (set1->size != set2->size) {
-        return false;
-    }
+    return false;
+}
 
-    for(int i = 0; i < set1->size; i++) {
+   int size = (set1->size> set2->size) ? set1->size : set2->size;
+
+
+    for(int i = 0; i < size;i++ ) {
         if (set1->arr[i] != set2->arr[i]) {
             return false;
         }
     }
 
-    return true;
-}
 
+    return true;
+
+}
 
 int findMin(BoolArray *set) {
-    for(int i = 0; i < set->size; i++) {
+    
+
+    for(int i = 0; i < MAX; i++) {
         if (set->arr[i] == 1) {
             return i;
+            break;
         }
     }
+    return -1;
 }
-
 
 int findMax(BoolArray *set) {
-    for(int i = set->size -1; i > 0; i--) {
-        if (set->arr[i] ==1) {
+    // TODO: Find the largest index with value 1
+
+    for(int i = MAX-1;  i >=0; i--) {
+        if (set->arr[i] == 1) 
             return i;
-        }
+        
     }
+    return -1;
 }
+

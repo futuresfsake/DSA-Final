@@ -1,30 +1,5 @@
-/*
-===========================================================
-🧠 OPEN HASHING (CHAINING) – NESTED STRUCT DICTIONARY
-===========================================================
-
-📘 CONTEXT:
-------------
-We’re implementing a Dictionary using **Open Hashing (Chaining)**.
-- Each bucket holds a linked list of entries.
-- Each entry has a key (string) and a value (int).
-
-📘 STRUCTURE (NESTED):
-----------------------
-Dictionary ─┬─> Bucket List (array)
-             └─> Entry Nodes (linked list)
-
-📘 TASKS TO IMPLEMENT:
-----------------------
-✅ void initDictionary(Dictionary *D)
-✅ unsigned int hash(char *key)
-✅ void insert(Dictionary *D, char *key, int value)
-✅ void display(Dictionary *D)
-✅ void merge(Dictionary *dest, Dictionary *src)
-✅ void deleteKey(Dictionary *D, char *key)
-✅ int search(Dictionary *D, char *key)
-
-*/
+// ** merging is like union, you check for duplicates, 
+// * ou transfer it into a destination which is also a dictionary
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -250,7 +225,8 @@ void merge(Dictionary *dest, Dictionary *src) {
 
             Entry* ptrA = dest->buckets[index].head;
 
-             bool inA = false;
+             bool inA = false; // ! always make sure that your flag is inside the loop so it 
+             // ! will be used corfrectly durig the iterations
 
 
             
