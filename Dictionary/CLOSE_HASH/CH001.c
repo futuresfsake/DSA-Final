@@ -398,23 +398,54 @@ Dictionary differenceDict(Dictionary *A, Dictionary *B) {
     
 
 
-// // ====================== SPECIAL ANALYTICS =========================
+// ====================== SPECIAL ANALYTICS =========================
 
-// // 🧹 Remove all entries in a continuous occupied cluster
-// void clearCluster(Dictionary *D, int index) {
-//     // 🧩 IMPLEMENT ME
-// }
+// 🧹 Remove all entries in a continuous occupied cluster
+void clearCluster(Dictionary *D, int index) {
+    
+    int start = index;
+
+    while (start) {
+        D->table[index].age = 0;
+        D->table[index].id = 0;
+        D->table[index].isDeleted = true;
+        D->table[index].isOccupied = false;
+        strcpy(D->table[index].name, "");
+        start = (start+1) % TABLE_SIZE; // ! MOVE RIGHT CIRCULARLY
+    }
+}
 
 
-// // // 🔗 Return the longest sequence of consecutive occupied slots
-// // int getLongestCluster(Dictionary *D) {
-// //     // 🧩 IMPLEMENT ME
-// //     return 0;
-// // }
+// 🔗 Return the longest sequence of consecutive occupied slots
+int getLongestCluster(Dictionary *D) {
+    // 🧩 IMPLEMENT ME
+
+    int count = 0;
+    int longest = 0;
+    for(int i = 0; i < TABLE_SIZE; i++) {
+        if (D->table[i].isOccupied) {
+            count++;
+        if (count>longest) longest = count;
+        } else {
+            count = 0;
+        }
 
 
-// // // 💥 Count total collisions (when probe index != hash index)
-// // int countTotalCollisions(Dictionary *D) {
-// //     // 🧩 IMPLEMENT ME
-// //     return 0;
-// // }
+    }
+    return longest;
+}
+
+
+// 💥 Count total collisions (when probe index != hash index)
+int countTotalCollisions(Dictionary *D) {
+
+    int count = 0;
+    for(int i = 0; i < TABLE_SIZE; i++) {
+        if (D->table[i].isOccupied) {
+            unsigned int index = hash(D->table[i].id);
+            if (index != i) count++;
+        }
+    }
+    // 🧩 IMPLEMENT ME
+    return count;
+}
