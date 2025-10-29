@@ -18,9 +18,19 @@ int main() {
     CompWord inie = 0;
     CompWord jobo = 0;
 
-    // Example of how to call (you can edit/remove later)
-    // setAnswer(&inie, 0, 1);
-    // setAnswer(&jobo, 1, 1);
+   
+    setAnswer(&inie, 0, 1); // Q1: Yes
+    setAnswer(&inie, 1, 1); // Q2: Yes
+    setAnswer(&inie, 3, 1); // Q4: Yes
+    setAnswer(&inie, 5, 1); // Q6: Yes
+    setAnswer(&inie, 8, 1); // Q9: Yes
+    setAnswer(&jobo, 0, 1); // Q1: Yes
+    setAnswer(&jobo, 2, 1); // Q3: Yes
+    setAnswer(&jobo, 4, 1); // Q5: Yes
+    setAnswer(&jobo, 5, 1); // Q6: Yes
+    setAnswer(&jobo, 6, 1); // Q7: Yes
+    setAnswer(&jobo, 7, 1); // Q8: Yes
+
 
     printf("Inie's answers: ");
     printAnswers(inie);
@@ -48,16 +58,66 @@ int main() {
     return 0;
 }
 
-// --- Function Definitions ---
-
 void setAnswer(CompWord* profile, int index, int value) {
-    // TODO: implement setting bit
+
+    if (value) {
+        *profile |= (1U<<index);
+    } else {
+        *profile &= ~(1U<<index);
+    }
+}
+int getAnswer(CompWord profile, int index) {
+    return ((profile >>index) & 1U) != 0;
 }
 
-int getAnswer(CompWord profile, int index) {
-    // TODO: implement getting bit value
-    return 0;
-}
 
 int countYesAnswers(CompWord profile) {
-    // TODO: implemen
+    int count = 0;
+
+
+    for(int i = 0; i <10; i++) {
+        if (((profile >> i) & 1U) == 1) {
+            count++;
+        }
+    }
+    return count;
+}
+
+
+void printAnswers(CompWord profile) {
+
+    printf("{");
+    for(int i = 9; i >=0; i--) {
+        printf("%d", (profile>>i) & 1U);
+    }
+    printf("}\n");
+
+}
+
+
+int compareProfiles(CompWord a, CompWord b) {
+    int matches = 0;
+    for(int i = 0; i < 10; i++) {
+        if (((a>>i)&1U) == ((b>>i) & 1U)) {
+            matches++;
+        }
+    }
+    return matches;
+}
+
+CompWord unionProfiles(CompWord a, CompWord b) {
+    CompWord W;
+    W = a|b;
+    return W;
+}
+
+CompWord intersectProfiles(CompWord a, CompWord b) {
+    CompWord W;
+    W = a &b;
+    return W;
+}
+CompWord differenceProfiles(CompWord a, CompWord b) {
+    CompWord W;
+    W = a & ~(b);
+    return W;
+}
