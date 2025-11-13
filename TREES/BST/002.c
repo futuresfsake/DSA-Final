@@ -3,154 +3,148 @@
 #include <stdbool.h>
 
 
+// Option 1 (Successor) → Replace 10 with 12 (smallest in right subtree).
+// Option 2 (Predecessor) → Replace 10 with 8 (largest in left subtree).
+// 10
+// 6
+// 15
+// 3
+// 8
+// 12
+// 13
+
+
 typedef struct node {
     int data;
     struct node* left;
     struct node* right;
-} Node, *BST;
+}Nodetype, *NodePtr, *BST;
 
-// ==========================================================
-// FUNCTION PROTOTYPES
-// ==========================================================
-BST createNode(int data);                  // create new node
-void insert(BST* root, int data);         // insert node
-void inorder(BST root);                    // left-node-right
-void preorder(BST root);                   // node-left-right
-void postorder(BST root);                  // left-right-node
-bool deleteNode(BST* root, int data);     // delete node
 
-// ==========================================================
-// MAIN FUNCTION – TEST DRIVER
-// ==========================================================
-int main() {
-    BST root = NULL;
+void addElems(BST* list, int data) {
+    BST* trav = list;
 
-    // Insert nodes
-    insert(&root, 10);
-    insert(&root, 5);
-    insert(&root, 15);
-    insert(&root, 3);
-    insert(&root, 7);
-    insert(&root, 12);
-    insert(&root, 18);
 
-    // Traversals
-    printf("Inorder: ");
-    inorder(root);
-    printf("\n");
-
-    printf("Preorder: ");
-    preorder(root);
-    printf("\n");
-
-    printf("Postorder: ");
-    postorder(root);
-    printf("\n");
-
-    // Test deletion
-    printf("Deleting 15...\n");
-    deleteNode(&root, 15);
-
-    printf("Inorder after deletion: ");
-    inorder(root);
-    printf("\n");
-
-    return 0;
-}
-
-// ==========================================================
-// FUNCTION STUBS – IMPLEMENT THESE
-// ==========================================================
-BST createNode(int data) {
-
-    Node* new = malloc(sizeof(Node));
-    new->data = data;
-    new->left = NULL;
-    new->right = NULL;
-
-    return new;
-}
-
-void insert(BST* root, int data) {
-    // TODO: insert a node maintaining BST property
-
-    BST* trav = root;
-    for(;*trav != NULL && (*trav)->data != data;) {
+    // ! traverse until we reach a NULL child position
+    for(; *trav != NULL && (*trav)->data != data;) {
         trav = ((*trav)->data < data) ? &(*trav)->right : &(*trav)->left;
     }
 
-    if (*trav == NULL) {
-        *trav = createNode(data);
+    // ! insert the new node at the found NULL position
+    if (*trav == NULL)  {
+        *trav = calloc(1,sizeof(Nodetype));
+        // ! 1 means the number of elements you want to allocate, its just one node
+        // ! it sets trav->data to 0, and sets right and left NULL
+        if (*trav != NULL) { // ** checking if the dynamic memory allocation failed
+            (*trav)->data = data;
+        }
     }
 }
 
-void inorder(BST root) {
-    // TODO: implement inorder traversal
-    if (root != NULL) {
-        inorder(root->left);
-        printf("%d ", root->data);
-        inorder(root->right);
 
-    }
+void inorder(BST list) {
+    if (list == NULL) return;
+
+    inorder(list->left);
+    printf("%d,", list->data);
+    inorder(list->right);
+
+}
+void preorder (BST list) {
+    if (list == NULL) return;
+
+
+    printf("%d,", list->data);
+    preorder(list->left); 
+    preorder(list->right);
+
 }
 
-void preorder(BST root) {
-    // TODO: implement preorder traversal
-    if (root != NULL) {
-        printf("%d ", root->data);
-        preorder(root->left);
-        preorder(root->right);
-    }
+void postorder (BST list) {
+    if (list == NULL) return;
+
+
+    
+    preorder(list->left); 
+    preorder(list->right);
+    printf("%d,", list->data);
 }
 
-void postorder(BST root) {
-    // TODO: implement postorder traversal
-    if (root != NULL) {
-        postorder(root->left);
-        postorder(root->right);
-        printf("%d ",root->data);
-    }
-}
 
-bool deleteNode(BST* root, int data) {
-    BST* trav = root;
+bool deletenode(BST *list, int data) {
+    BST *trav = list;
 
-    for(;*trav != NULL && (*trav)->data != data;) {
+    // TODO  Find the node to delete
+    for (; *trav != NULL && (*trav)->data != data;) {
         trav = ((*trav)->data < data) ? &(*trav)->right : &(*trav)->left;
     }
 
+    // ! IF NODE NOT FOUND
     if (*trav == NULL) return false;
 
+
+    // ! SAVE THE NODE TO BE DELETED
     BST temp = *trav;
 
+    // TODO CASE 1: No children
     if ((*trav)->left == NULL && (*trav)->right == NULL) {
         free(temp);
-        *trav = NULL;
+        *trav = NULL; // ! set the parent pointer to null
     }
 
-    else if ((*trav)->left == NULL) {
-        *trav = (*trav)->right;
-        free(temp);
-
+    // TODO CASE 2A: Only left child
+    else if ((*trav)->right == NULL) { // ! node has left child but no right child
+        *trav = (*trav)->left;         // ! replace the node with its left child by changing the parent pointer
+        free(temp);                     // ! free the original node memory
     }
 
-    else if ((*trav)->right == NULL) {
-        *trav = (*trav)->left;
-        free(temp);
+    // TODO CASE 2B: Only right child
+    else if ((*trav)->left == NULL) { // ! node has right no left
+        *trav = (*trav)->right;         // ! replace the node with its right child
+        free(temp);                     // ! free the original node memory
+    }
 
-    } 
-
+    // TODO CASE 3: Two children
     else {
-        BST* succ = &(*trav)->left;
-        while ((*succ)->right) {
-            succ = &(*succ)->right;
+        // find successor (smallest in right subtree)
+        BST *succ = &(*trav)->right;    // ! find the successer or the smallest node in the right subtree
+        while ((*succ)->left != NULL) { // ! traverse right once, then keep going left until null
+            succ = &(*succ)->left;
         }
 
-        (*trav)->data = (*succ)->data;
+        // copy successor data
+        (*trav)->data = (*succ)->data; // ! copy the successor into the node you want to delete
 
-        deleteNode(succ, (*succ)->data);
+        // recursively delete successor node
+        deletenode(succ, (*succ)->data);
     }
 
-
     return true;
+}
+
+
+int main() {
+
+     BST root = NULL;
+
+    addElems(&root, 10);
+    addElems(&root, 6);
+    addElems(&root, 15);
+    addElems(&root, 3);
+    addElems(&root, 8);
+    addElems(&root, 12);
+    addElems(&root, 20);
+
+    printf("Inorder traversal: ");
+    inorder(root);
+
+
+    printf("\nDeleting 10...\n");
+deletenode(&root, 10);
+printf("Inorder traversal after delete: ");
+inorder(root);
+
+
+    return 0;
+   
 }
