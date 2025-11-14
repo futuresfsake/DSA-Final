@@ -1,99 +1,171 @@
 #include <stdio.h>
-#define MAX 100
+#include <stdlib.h>
+#include <stdbool.h>
 
-// structure for priority queue item
-struct Item {
-    int data;
-    int priority;
-};
+#define MAX 10
 
-struct PriorityQueue {
-    struct Item arr[MAX];
-    int size;
-};
+typedef struct {
+    int elem[MAX];
+    int lastndx;     // index of last element ( -1 means empty )
+} PQueue;
 
-// function prototypes
-void enqueue(struct PriorityQueue *pq, int data, int priority);
-void dequeue(struct PriorityQueue *pq);
-int peek(struct PriorityQueue pq);
-void display(struct PriorityQueue pq);
+// ==========================================================
+// FUNCTION PROTOTYPES
+// ==========================================================
+void initPQ(PQueue* pq);
+bool isEmpty(PQueue pq);
+bool isFull(PQueue pq);
+void insertPQ(PQueue* pq, int value);   // enqueue with priority
+int deleteMin(PQueue* pq);              // dequeue
+void displayPQ(PQueue pq);              // array level-order
+void preorder(int heap[], int i, int n);
+void inorder(int heap[], int i, int n);
+void postorder(int heap[], int i, int n);
 
+// ==========================================================
+// MAIN
+// ==========================================================
 int main() {
-    struct PriorityQueue pq;
-    pq.size = 0;
+    PQueue pq;
+    initPQ(&pq);
 
-    enqueue(&pq, 10, 2);
-    enqueue(&pq, 20, 5);
-    enqueue(&pq, 30, 1);
-    enqueue(&pq, 40, 4);
+    insertPQ(&pq, 40);
+    insertPQ(&pq, 10);
+    insertPQ(&pq, 30);
+    insertPQ(&pq, 5);
+    insertPQ(&pq, 60);
 
-    printf("Current Queue:\n");
-    display(pq);
+    printf("\nPriority Queue (Level Order): ");
+    displayPQ(pq);
 
-    printf("\nPeek (highest priority element): %d\n", peek(pq));
+    printf("\nPreorder: ");
+    preorder(pq.elem, 0, pq.lastndx + 1);
 
-    dequeue(&pq);
-    printf("\nAfter Dequeue:\n");
-    display(pq);
+    printf("\nInorder: ");
+    inorder(pq.elem, 0, pq.lastndx + 1);
+
+    printf("\nPostorder: ");
+    postorder(pq.elem, 0, pq.lastndx + 1);
+
+    printf("\n\nDeleted Min = %d\n", deleteMin(&pq));
+
+    printf("\nAfter delete: ");
+    displayPQ(pq);
 
     return 0;
 }
 
-void enqueue(struct PriorityQueue *pq, int data, int priority) {
-    if (pq->size == MAX) {
-        printf("Queue overflow!\n");
+// ==========================================================
+// FUNCTION DEFINITIONS (You will fill these)
+// ==========================================================
+
+void initPQ(PQueue* pq) {
+    
+    pq->lastndx = -1;
+}
+bool isEmpty(PQueue pq) {
+    return pq.lastndx == -1;
+}
+bool isFull(PQueue pq) {
+    return pq.lastndx == MAX -1;
+}
+void insertPQ(PQueue* pq, int value) {
+
+    int idx, prntidx;
+
+    if (pq->lastndx == MAX -1) {
+        printf("Heap is already full\n");
         return;
     }
-    pq->arr[pq->size].data = data;
-    pq->arr[pq->size].priority = priority;
-    pq->size++;
-    printf("Enqueued: %d (Priority: %d)\n", data, priority);
-}
 
-void dequeue(struct PriorityQueue *pq) {
-    if (pq->size == 0) {
-        printf("Queue underflow!\n");
-        return;
+
+    pq->lastndx++;
+    idx = pq->lastndx;
+    prntidx = (idx -1) / 2;
+
+    while (idx > 0 && pq->elem[prntidx] > value) {
+        pq->elem[idx] = pq->elem[prntidx];
+        idx = prntidx;
+        prntidx = (idx -1) / 2;
+
     }
 
-    int highest = 0;
-    // find index of highest priority
-    for (int i = 1; i < pq->size; i++) {
-        if (pq->arr[i].priority > pq->arr[highest].priority)
-            highest = i;
-    }
+    pq->elem[idx] = value;
 
-    printf("Dequeued: %d (Priority: %d)\n",
-           pq->arr[highest].data, pq->arr[highest].priority);
 
-    // shift remaining elements left
-    for (int i = highest; i < pq->size - 1; i++)
-        pq->arr[i] = pq->arr[i + 1];
+} 
 
-    pq->size--;
-}
+int deleteMin(PQueue* pq) {
 
-int peek(struct PriorityQueue pq) {
-    if (pq.size == 0) {
-        printf("Queue is empty!\n");
+    int ret, trav, child, swap;
+
+    // * check first if there is something to delete, check if it is empty or not
+
+    if (pq->lastndx == -1) {
+        printf("Heap is empty!\n");
         return -1;
     }
 
-    int highest = 0;
-    for (int i = 1; i < pq.size; i++) {
-        if (pq.arr[i].priority > pq.arr[highest].priority)
-            highest = i;
-    }
-    return pq.arr[highest].data;
-}
 
-void display(struct PriorityQueue pq) {
-    if (pq.size == 0) {
-        printf("Queue is empty!\n");
-        return;
+    // ! THIS IS TO SAVE AND REMOVE THE ROOT, smallest item stored in ret
+    // ! last element moved to top
+
+    ret = pq->elem[0]; // TODO return the smallest
+    pq->elem[0] = pq->elem[pq->lastndx]; // TODO move last element to the root
+    pq->lastndx--; // TODO shrink the heap
+
+
+    // ! START TO BUBBLE-DOWN
+    // * trav is the index of the current node
+    // * child is its left child (2 * 0 + 1 = 1)
+    trav = 0; // TODO start from the root
+    child = 1; // TODO left child
+
+
+
+    // * while a child still exsits, keep going until we reach the bottom
+
+    while (child <= pq->lastndx) {
+
+        // TODO : choose the smaller child
+        // ! a min heap must compare the smaller of the two children
+
+        // * child + 1 <= pq->lstindx => checks if the right child exists, this has nothing to do with the last index being smaller or bigger, it just ensures that we dont access outside the array
+        // * pq->elem[child+1] < pq->elem[child] => compares right vs left, if right child is smaller than left child, we want tp consider the right child as the one to swap with the parent
+        //* moves the child index from left to right, so the smaller of the two children is used in the enxt swap
+        if (child + 1 <= pq->lastndx && pq->elem[child+1] < pq->elem[child]) {
+            child++;
+        }
+
+
+
+        // TODO  if parent > smaller child, swap
+        //* in the first traversal, if the root is greatr than the left child, we have to 
+        //* to put th e left child as the root
+        if (pq->elem[trav] > pq->elem[child]) {
+            swap = pq->elem[trav];
+            pq->elem[trav] = pq->elem[child];
+            pq->elem[child] = swap;
+
+            // ! this line is all about continuiong the bubble down process
+            // * we need to continue, because the new position may still violate the heap property with its own children
+
+            
+            // ! so we need to update the indexes
+            trav = child;  // TODO move downwards, now the parent is at the new position
+            child = 2 * trav +1;  // TODO recompute new child,, left child of new parent
+
+        } else {
+            break;
+        }
+
+
     }
-    printf("Data\tPriority\n");
-    for (int i = 0; i < pq.size; i++) {
-        printf("%d\t%d\n", pq.arr[i].data, pq.arr[i].priority);
-    }
-}
+
+    return ret; // ! ret is just a simple var, it just stores the root value, while all the traversals and condiitons
+                // ! its  just a way in adjusting and ensuring the property of POT!
+}          // dequeue
+void displayPQ(PQueue pq);              // array level-order
+void preorder(int heap[], int i, int n);
+void inorder(int heap[], int i, int n);
+void postorder(int heap[], int i, int n);
