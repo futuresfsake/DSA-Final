@@ -13,13 +13,15 @@ typedef struct {
 
 void addElem (Heap* H, int elem);
 
-void displayInorder(Heap* H, int i) {
-    if (i > H->lastndx) return;   // base case
-
-    displayInorder(H, 2*i + 1);   // left child
-    printf("%d ", H->elem[i]);    // root
-    displayInorder(H, 2*i + 2);   // right child
+void displayInorder(Heap* H) {
+    for(int i = 0; i <= H->lastndx; i++) {
+    
+    printf("%d->", H->elem[i]);
+    }
+    printf("NULL\n");
 }
+
+int deleteElem(Heap* H);
 
 int main() {
     Heap H;
@@ -33,8 +35,15 @@ int main() {
     addElem(&H, 25);
 
      printf("Heap elements (inorder): ");
-    displayInorder(&H, 0); // start at root
+    displayInorder(&H); // start at root
     printf("\n");
+
+    deleteElem(&H);
+    printf("After deleting the root (8):\n");
+         printf("Heap elements (inorder): ");
+             displayInorder(&H); // start at root
+
+
 
 
     return 0;
@@ -48,7 +57,7 @@ void addElem (Heap* H, int elem) {
     // * 1. Check if there is still space
     if (H->lastndx == MAX -1) {
         printf("Heap is full!\n");
-        return;
+        return ;
     }
 
     // * 2. Insert at last index +1
@@ -68,3 +77,43 @@ void addElem (Heap* H, int elem) {
 
 }
 
+
+
+int deleteElem(Heap* H) {
+    int ret, child, trav, swap;
+
+
+    if (H->lastndx == -1) return -1;
+
+
+    ret = H->elem[0];
+    H->elem[0] = H->elem[H->lastndx];
+    H->lastndx--;
+
+    trav = 0;
+    child = 1;
+
+
+    while (child <= H->lastndx) {
+
+    if (child +1 <= H->lastndx && H->elem[child+1] < H->elem[child]) {
+        child++;
+    }
+
+    if ( H->elem[trav] > H->elem[child]) {
+        swap = H->elem[trav];
+        H->elem[trav] = H->elem[child];
+        H->elem[child] = swap;
+
+
+        trav = child;
+        child = 2*trav+ 1;
+    } else {
+        break;
+    }
+
+
+
+    }
+    return ret;
+}
