@@ -22,6 +22,9 @@ void displayInorder(Heap* H) {
 }
 
 int deleteElem(Heap* H);
+void HeapSortDesc(Heap* H);
+void HeapSortAsc(Heap* H);
+
 
 int main() {
     Heap H;
@@ -43,6 +46,11 @@ int main() {
          printf("Heap elements (inorder): ");
              displayInorder(&H); // start at root
 
+
+    HeapSortDesc(&H);
+    displayInorder(&H);
+    HeapSortAsc(&H);
+    displayInorder(&H);
 
 
 
@@ -116,4 +124,76 @@ int deleteElem(Heap* H) {
 
     }
     return ret;
+}
+
+
+
+// void HeapSort(Heap* H) {
+//     int i, orig, catcher;
+//     int temp[MAX];
+
+//     orig = H->lastndx;
+
+//     // Step 1: copy elements to temp
+//     for(i = 0; i <= orig; i++)    // * this is just a safe copy 
+//         temp[i] = H->elem[i];
+
+//     // Step 2: rebuild heap 
+//     H->lastndx = -1; // * this is a way to reset heap, next insertions will rebuild the heap from scratch
+//     for(i = 0; i <= orig; i++)
+//         addElem(H, temp[i]); // * every insert the new element is bubbled up until heap property is resrtored
+
+//     // Step 3: delete min repeatedly and store back //* delete the elements to sort
+//     //* or in for loop u can (for(i = orig; i >= 0; i--) )
+//    for(i = orig; i >= 0; i--) { //* 
+//         catcher = deleteElem(H);
+//         H->elem[i] = catcher;  
+//         //* we start in the last index in storing the first root, for it to get descending
+//     }
+
+//     H->lastndx = orig;
+// }
+
+
+//* not using a temporary array, shorthand style
+void HeapSortDesc (Heap* H) {
+    int i, orig, catcher;
+
+    orig = H->lastndx;   //* save the original last index
+    H->lastndx= -1;  //* reset the heap
+    
+
+    for(i = 0; i <= orig; i++) {  //* add again the elem to H
+        addElem(H, H->elem[i]); //* it will adjust all the elements
+    } //! meaning old values are still there, but the heap is empty logically
+
+    for(i = orig; i >= 0; i--) {  //* after deleting, it will store the root node in the last index
+        catcher = deleteElem(H);
+        H->elem[i] = catcher;
+    }
+
+    H->lastndx = orig; //* copy the lstindex in orig
+
+
+}
+
+void HeapSortAsc(Heap* H) {
+    int i, orig, catcher;
+
+    orig = H->lastndx;   //* save the original last index
+    H->lastndx= -1;  //* reset the heap
+    
+
+    for(i = 0; i <= orig; i++) {  //* add again the elem to H
+        addElem(H, H->elem[i]); //* it will adjust all the elements
+    } //! meaning old values are still there, but the heap is empty logically
+
+    for(i = 0; i <= orig; i++) {  //* after deleting, it will store the root node in the last index
+        catcher = deleteElem(H);
+        H->elem[i] = catcher;
+    }
+
+    H->lastndx = orig; //* copy the lstindex in orig
+
+
 }
