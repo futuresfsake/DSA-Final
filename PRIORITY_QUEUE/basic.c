@@ -165,7 +165,46 @@ int deleteMin(PQueue* pq) {
     return ret; // ! ret is just a simple var, it just stores the root value, while all the traversals and condiitons
                 // ! its  just a way in adjusting and ensuring the property of POT!
 }          // dequeue
-void displayPQ(PQueue pq);              // array level-order
-void preorder(int heap[], int i, int n);
-void inorder(int heap[], int i, int n);
-void postorder(int heap[], int i, int n);
+
+
+void displayPQ(PQueue pq) {
+    printf("DISPLAY: \n");
+    for(int i = 0; i < pq.lastndx; i++) {
+        printf("%d->", pq.elem[i]);
+        if (i == pq.lastndx-1) {
+            printf("NULL");
+        }
+    }
+    
+}             // array level-order
+
+
+void preorder(int heap[], int i, int n) {
+
+    
+    //* i => it is the current index
+    //* n => the number of elements pq->lastindx +1
+
+    if (i >= n) return; // ! out of bounds
+    printf("%d ", heap[i]);
+    preorder(heap, 2*i+1, n);
+    preorder(heap, 2*i+2, n);
+    
+}
+
+
+void inorder(int heap[], int i, int n) {
+    if (i >= n) return;
+    inorder(heap, 2*i+1, n);
+    printf("%d ", heap[i]);
+    inorder(heap, 2*i+2, n);
+    
+}
+void postorder(int heap[], int i, int n) {
+    if (i>=n) return;
+    postorder(heap,2*i+1, n);
+    postorder(heap,2*i+2, n);
+    printf("%d ", heap[i]);
+    
+
+}
