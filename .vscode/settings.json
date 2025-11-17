@@ -1,5 +1,8 @@
 {
     "files.associations": {
-        "EnqueueSorted.C": "cpp"
+        "EnqueueSorted.C": "cpp",
+        "stdlib.h": "c",
+        "stdio.h": "c",
+        "CC002.C": "cpp"
     }
 }

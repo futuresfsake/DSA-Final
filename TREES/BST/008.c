@@ -133,3 +133,6 @@ void postorder(BST root) {
         printf("%d ", root->data);
 
 }
+
+
+
