@@ -21,6 +21,7 @@ void HeapSortDesc(Heap* H);
 
 void displayInorder(Heap* H);
 void Minheapify(Heap* H);
+void HuffmanCode(Heap* H);
 
 
 //========== MAIN PROGRAM ==========
@@ -31,12 +32,17 @@ int main() {
     // Sample insertions
     addElem(&H, 15);
     addElem(&H, 10);
-    addElem(&H, 20);
-    addElem(&H, 8);
-    addElem(&H, 25);
+    addElem(&H, 100);
+    addElem(&H, 43);
+    addElem(&H, 1);
 
     printf("Heap elements (level-order): ");
     displayInorder(&H);
+
+    printf("MinHeapify\n");
+    Minheapify(&H);
+    displayInorder(&H);
+
 
     printf("\nDeleting root...\n");
     deleteElem(&H);
@@ -51,6 +57,8 @@ int main() {
     printf("\nHeapSort Asc:\n");
     HeapSortAsc(&H);
     displayInorder(&H);
+
+
 
     return 0;
 }
@@ -211,7 +219,7 @@ void Minheapify(Heap* H) {
     if (H->lastndx == -1) return;
 
 
-    pr = H->lastndx;
+    pr = (H->lastndx-1) /2;
 
     while (pr>=0) {
         down = pr; //* use this to trav
@@ -244,4 +252,9 @@ void Minheapify(Heap* H) {
         }
         pr--;
     }
+}
+
+
+void HuffmanCode(Heap* H) {
+
 }
