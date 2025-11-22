@@ -3,6 +3,7 @@
         "EnqueueSorted.C": "cpp",
         "stdlib.h": "c",
         "stdio.h": "c",
-        "CC002.C": "cpp"
+        "CC002.C": "cpp",
+        "001.C": "cpp"
     }
 }

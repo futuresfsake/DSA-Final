@@ -201,7 +201,7 @@ char *lookup_cache(HashTable *table, const char *url) {
 // Insert into cache
 // ---------------------------
 bool insert_cache(HashTable *table, const char *url) {
-    if (!url) return false;
+    // if (!url) return false;
     unsigned int idx = hash(url);
 
     // Check duplicates
@@ -226,13 +226,7 @@ bool insert_cache(HashTable *table, const char *url) {
 
     node->url = malloc(strlen(url)+1);
     node->content = malloc(strlen(fetched)+1);
-    if (!node->url || !node->content) {
-        free(fetched);
-        free(node->url);
-        free(node->content);
-        free(node);
-        return false;
-    }
+    
 
     strcpy(node->url, url);
     strcpy(node->content, fetched);
