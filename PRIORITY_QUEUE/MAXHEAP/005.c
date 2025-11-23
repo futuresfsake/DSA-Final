@@ -3,6 +3,10 @@
 //* consider the bounds checking
 
 
+
+//* in deleting
+//**** we do pq->heap[0] = pq->heap[pq->size-1] , because we did 0 based indexing, that is to check the bounds*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -200,6 +204,7 @@ void increaseSeverity(EmergencyPQ* pq, int incidentID, int amount) {
         if (pq->heap[i].incidentID == incidentID) {
             pq->heap[i].severity += amount;
             heapifyUp(pq, i);
+            break;
         }
     }
 }
@@ -230,6 +235,7 @@ bool pqDeleteByID(EmergencyPQ* pq, int incidentID) {
 
 
 //! replace with the last element
+//* pq->size -1, checking for bounds, since we used 0based index
     pq->heap[index] = pq->heap[pq->size-1];
     pq->size--;
     
