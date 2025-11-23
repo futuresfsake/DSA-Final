@@ -1,3 +1,6 @@
+
+//* practice on recursion
+
 /*
  * Problem Statement: File System Indexer (Binary Search Tree)
 
@@ -66,7 +69,7 @@ FileNode *create_node(int fid, const char *path) {
 
     new->fid = fid;
     new->path = malloc(strlen(path)+1);
-    if (!new->path) return NULL;
+    if (!new->path)  free(new); return NULL;
     strcpy(new->path, path);
     new->left=NULL;
     new->right = NULL;
@@ -123,16 +126,18 @@ FileNode *search_file(BST *tree, int fid) {
  * @return true on successful insertion or if FID already exists (skipped), false on failure.
  */
 bool insert_file(BST *tree, int fid, const char *path) {
+    
+    if (search_file(tree, fid)) {
+        
+        return true;
+    }
+
 
     FileNode* new = create_node(fid, path);
     if (!new) return false;
 
-    if (search_file(tree, fid)) {
-        free(new->path);
-        free(new);
-        return true;
-    }
 
+    
     tree->root = insert_node_recursive(tree->root, new);
     return true;
 }
