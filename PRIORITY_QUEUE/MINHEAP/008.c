@@ -89,9 +89,7 @@ void buildMinHeap(PriorityQueue *pq) {
 
 }
 
-// ================================
-// Main Demo
-// ================================
+
 int main() {
     PriorityQueue pq;
     initPQ(&pq);
