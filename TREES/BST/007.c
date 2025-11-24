@@ -1,15 +1,7 @@
 /**
- * BINARY SEARCH TREE - Complete Implementation in C
- * 
- * Includes all common operations:
- * 1. Insert
- * 2. Search
- * 3. Delete
- * 4. Validate BST (with recursive boundary tracking)
- * 5. Inorder Traversal (sorted output)
- * 6. Find Min/Max
- * 7. Find Height
- * 8. Count Nodes
+ * BINARY SEARCH TREE - Complete Boilerplate for Product BST
+ * Adjusted to match:
+ *   typedef struct { int prodqty; int id; char name[100]; } Product;
  */
 
 #include <stdio.h>
@@ -17,245 +9,265 @@
 #include <stdbool.h>
 #include <limits.h>
 
+typedef struct {
+    int prodqty;
+    int id;
+    char name[100];
+} Product;
+
 // Node structure
 typedef struct TreeNode {
-    int data;
+    Product data;
     struct TreeNode* left;
     struct TreeNode* right;
-} TreeNode;
+}  Node,TreeNode, *NodePtr;
 
 // ==================== CREATE NEW NODE ====================
-TreeNode* createNode(int data) {
-    TreeNode* newNode = (TreeNode*)malloc(sizeof(TreeNode));
-    if (newNode == NULL) {
-        printf("Memory allocation failed!\n");
-        exit(1);
+TreeNode* createNode(Product data) {
+    
+    TreeNode* prods = malloc(sizeof(Node));
+    if (!prods) {
+        return NULL;
     }
-    newNode->data = data;
-    newNode->left = NULL;
-    newNode->right = NULL;
-    return newNode;
+
+    prods->data = data;
+    prods->left = NULL;
+    prods->right = NULL;
+    return prods;
 }
 
 // ==================== INSERT ====================
-TreeNode* insert(TreeNode* root, int data) {
-    // TODO: Implement insert operation
-    // Base case: if tree is empty, create new node
+TreeNode* insert(TreeNode* root, Product data) {
+   
+
+    NodePtr* trav = &root;
+
+    for(;*trav != NULL && (*trav)->data.id != data.id;) {
+        trav = ((*trav)->data.prodqty < data.prodqty) ? &(*trav)->right : &(*trav)->left;
+    }
+
+    if (*trav != NULL) return NULL;
     
-    // If data is less than root, go left
-    
-    // If data is greater than root, go right
-    
+    Node* new = createNode(data);
+
+    *trav = new;
     return root;
 }
 
-// ==================== SEARCH ====================
-bool search(TreeNode* root, int data) {
-    // TODO: Implement search operation
-    // Base case: if root is NULL, return false
-    
-    // If found, return true
-    
-    // If data is less than root, search left
-    
-    // If data is greater than root, search right
-    
-    return false;
+//! recursive version, it means you have to traverse to the whole list
+bool search(TreeNode* root, int id) {
+    // TODO: search by product ID
+
+    if (root == NULL) return false;
+
+    if (root->data.id == id) return true;
+
+    return search(root->left, id) || search(root->right, id);
 }
 
 // ==================== FIND MINIMUM ====================
-TreeNode* findMin(TreeNode* root) {
-    // TODO: Find minimum value node
-    // Hint: Keep going left until you can't
+Product findMin(TreeNode* root) {
+    // TODO: go left until NULL
+
+    if (root == NULL) {
+    Product p = {0, -1, ""};
+    return p;}
+
+    if (root->left == NULL) {
+        return root->data;
+    }
     
-    return NULL;
+
+    return findMin(root->left);
 }
 
 // ==================== FIND MAXIMUM ====================
-TreeNode* findMax(TreeNode* root) {
-    // TODO: Find maximum value node
-    // Hint: Keep going right until you can't
-    
-    return NULL;
+Product findMax(TreeNode* root) {
+    // TODO: go right until NULL
+
+    if (root == NULL) {
+    Product p = {0, -1, ""};
+    return p;
+    }
+
+    if (root->right == NULL) {
+        return root->data;
+    }
+
+    return findMax(root->right);
 }
 
-// ==================== DELETE ====================
-TreeNode* deleteNode(TreeNode* root, int data) {
-    // TODO: Implement delete operation
-    // Base case: if root is NULL, return NULL
+// // ==================== DELETE NODE ====================
+// TreeNode* deleteNode(TreeNode* root, int id) {
+//     // TODO: delete node by product ID
+
+//     if (root == NULL) return root;
+
+//     if (root->data.id == id) {
+//         Product p = root->data;
+
+//         TreeNode** trav = &root;
+//         for(;*trav != NULL && (*trav)->data.id != p.id;) {
+//             trav = (*trav)->data.prodqty < p.prodqty ? &(*trav)->right : &(*trav)->left;
+//         }
+
+//         NodePtr temp = *trav;
+
+//         if ((*trav)->right == NULL && (*trav)->left == NULL) {
+//             free(temp);
+//             *trav = NULL;
+//         }
+
+//         else if ((*trav)->left == NULL) {
+//             *trav = (*trav)->right;
+//             free(temp);
+//         } 
+//         else if ((*trav)->right == NULL) {
+//             *trav = (*trav)->left;
+//             free(temp);
+//         } else {
+//             NodePtr* succ = &(*trav)->right;
+//             while ((*succ)->left) {
+//                 succ = &(*succ)->left;
+//             }
+
+//             (*trav)->data = (*succ)->data;
+//             root = deleteNode(*succ, (*succ)->data.id);
+
+
+//         }
+
+
+
+//     }
     
-    // Find the node to delete
-    
-    // Case 1: Node with no children (leaf node)
-    
-    // Case 2: Node with one child
-    
-    // Case 3: Node with two children
-    // Replace with inorder successor (minimum in right subtree)
-    
-    return root;
+//     root = deleteNode(root->left, id);
+//     root = deleteNode(root->right, id);
+// }
+
+
+
+TreeNode* deleteNode(TreeNode* root, int id) {
+    if (root == NULL) return NULL;
+
+    root->left = deleteNode(root->left, id);
+    root->right = deleteNode(root->right, id);
+
+    if (root->data.id == id) {
+       
+        NodePtr temp = root;
+
+        if (root->right == NULL && root->left == NULL) {
+            free(temp);
+            return NULL;
+        }
+
+        else if (root->left == NULL) {
+            root= root->right;
+            free(temp);
+        } 
+        else if (root->right == NULL) {
+            root= root->left;
+            free(temp);
+        } else {
+            NodePtr succ =root->right;
+            while (succ->left) {
+                succ = root->left;
+            }
+
+            (root)->data = (succ)->data;
+            root->right = deleteNode(root->right, (succ)->data.id);
+
+
+
+    }
 }
 
-// ==================== VALIDATE BST (BOUNDARY TRACKING) ====================
-bool validateBSTHelper(TreeNode* node, int min, int max) {
-    // TODO: Implement BST validation with boundary tracking
-    // This is the KEY recursive function!
-    
-    // Base case: empty tree is valid
-    
-    // Check if current node violates BST property
-    // (node->data must be > min AND < max)
-    
-    // Recursively validate left subtree (update max boundary)
-    
-    // Recursively validate right subtree (update min boundary)
-    
-    return true;
+return root;
 }
 
-bool isValidBST(TreeNode* root) {
-    // TODO: Call helper function with initial boundaries
-    return validateBSTHelper(root, INT_MIN, INT_MAX);
-}
+
 
 // ==================== INORDER TRAVERSAL ====================
 void inorderTraversal(TreeNode* root) {
-    // TODO: Implement inorder traversal (Left -> Root -> Right)
-    // This should print values in sorted order for a valid BST
-    
+    if (root == NULL) return;
+
+    inorderTraversal(root->left);
+
+    printf("\n[ID: %d | Qty: %d | Name: %s]  \n",
+           root->data.id,
+           root->data.prodqty,
+           root->data.name);
+
+    inorderTraversal(root->right);
 }
 
-// ==================== PREORDER TRAVERSAL ====================
-void preorderTraversal(TreeNode* root) {
-    // TODO: Implement preorder traversal (Root -> Left -> Right)
-    
-}
 
-// ==================== POSTORDER TRAVERSAL ====================
-void postorderTraversal(TreeNode* root) {
-    // TODO: Implement postorder traversal (Left -> Right -> Root)
-    
-}
-
-// ==================== FIND HEIGHT ====================
+// ==================== HEIGHT ====================
 int height(TreeNode* root) {
-    // TODO: Find height of tree
-    // Height = longest path from root to leaf
     
-    return 0;
+    if (root == NULL) return -1;
+
+    int h1 = height(root->left);
+    int h2 = height(root->right);
+    return (h1 < h2 ? h2: h1 )+1;
 }
 
 // ==================== COUNT NODES ====================
 int countNodes(TreeNode* root) {
-    // TODO: Count total number of nodes
-    
-    return 0;
+
+    //! return 0, because counting nodes is an additive operation, if subtree is empty, it contributes 0 nodes
+    if (root == NULL) return 0;
+
+    int c1 = countNodes(root->left);
+    int c2 = countNodes(root->right);
+
+    return c1+c2+1;
 }
 
 // ==================== FREE TREE ====================
 void freeTree(TreeNode* root) {
-    if (root == NULL) return;
+    if (!root) return;
     freeTree(root->left);
     freeTree(root->right);
     free(root);
 }
 
-// ==================== MAIN - TEST CASES ====================
+// ==================== MAIN ====================
 int main() {
     TreeNode* root = NULL;
-    
-    printf("=== Binary Search Tree Operations ===\n\n");
-    
-    // Test Insert
-    printf("Inserting: 50, 30, 70, 20, 40, 60, 80\n");
-    root = insert(root, 50);
-    root = insert(root, 30);
-    root = insert(root, 70);
-    root = insert(root, 20);
-    root = insert(root, 40);
-    root = insert(root, 60);
-    root = insert(root, 80);
-    
-    // Test Traversals
-    printf("\nInorder Traversal (should be sorted): ");
+
+    printf("=== Product BST Test ===\n");
+
+    Product p1 = {100, 50, "Item A"};
+    Product p2 = {50, 30, "Item B"};
+    Product p3 = {80, 70, "Item C"};
+    Product p4 = {20, 20, "Item D"};
+    Product p5 = {10, 40, "Item E"};
+
+    root = insert(root, p1);
+    root = insert(root, p2);
+    root = insert(root, p3);
+    root = insert(root, p4);
+    root = insert(root, p5);
+
+    printf("\nInorder traversal: ");
     inorderTraversal(root);
-    printf("\n");
-    
-    printf("Preorder Traversal: ");
-    preorderTraversal(root);
-    printf("\n");
-    
-    printf("Postorder Traversal: ");
-    postorderTraversal(root);
-    printf("\n");
-    
-    // Test Search
-    printf("\nSearch for 40: %s\n", search(root, 40) ? "Found" : "Not Found");
-    printf("Search for 100: %s\n", search(root, 100) ? "Found" : "Not Found");
-    
-    // Test Min/Max
-    TreeNode* minNode = findMin(root);
-    TreeNode* maxNode = findMax(root);
-    printf("\nMinimum value: %d\n", minNode ? minNode->data : -1);
-    printf("Maximum value: %d\n", maxNode ? maxNode->data : -1);
-    
-    // Test Height and Count
-    printf("\nHeight of tree: %d\n", height(root));
+
+    printf("\nSearch for ID 40: %s\n", search(root, 40) ? "Found" : "Not Found");
+
+    Product mn = findMin(root);
+    Product mx = findMax(root);
+    printf("\nMin product ID: %d\n", mn.id);
+    printf("Max product ID: %d\n", mx.id);
+
+    printf("\nHeight: %d\n", height(root));
     printf("Total nodes: %d\n", countNodes(root));
-    
-    // Test Validate BST
-    printf("\nIs Valid BST? %s\n", isValidBST(root) ? "YES" : "NO");
-    
-    // Test Delete
-    printf("\nDeleting node 20...\n");
-    root = deleteNode(root, 20);
-    printf("Inorder after deletion: ");
-    inorderTraversal(root);
-    printf("\n");
-    
-    printf("\nDeleting node 30...\n");
+
+    printf("\nDeleting ID 30...\n");
     root = deleteNode(root, 30);
-    printf("Inorder after deletion: ");
     inorderTraversal(root);
-    printf("\n");
-    
-    printf("\nDeleting node 50 (root)...\n");
-    root = deleteNode(root, 50);
-    printf("Inorder after deletion: ");
-    inorderTraversal(root);
-    printf("\n");
-    
-    // Validate after deletions
-    printf("\nIs still Valid BST? %s\n", isValidBST(root) ? "YES" : "NO");
-    
-    // Test invalid BST
-    printf("\n=== Testing Invalid BST ===\n");
-    TreeNode* invalidRoot = createNode(5);
-    invalidRoot->left = createNode(1);
-    invalidRoot->right = createNode(4);
-    invalidRoot->right->left = createNode(3);
-    invalidRoot->right->right = createNode(6);
-    
-    printf("Invalid tree inorder: ");
-    inorderTraversal(invalidRoot);
-    printf("\n");
-    printf("Is Valid BST? %s\n", isValidBST(invalidRoot) ? "YES" : "NO");
-    
-    // Clean up
-    freeTree(root);
-    freeTree(invalidRoot);
-    
+
+   
     return 0;
 }
-
-/* 
- * EXPECTED OUTPUT:
- * =================
- * Inorder Traversal: 20 30 40 50 60 70 80 (sorted)
- * Minimum: 20
- * Maximum: 80
- * Height: 2
- * Is Valid BST: YES
- * After deletions, tree should remain valid BST
- * Invalid tree should return: NO
- */
