@@ -1,3 +1,16 @@
+//* see how the root is passed not as a double pointer
+//* you must be careful in your recursive parameters
+//* when using the return value to update a tree root->left = funct() => u must 
+//* always pass the start of the chain not the end of the chain
+//* passing (*trav) in delete, is wrong, specific bug called as self deletion, 
+
+//! be mindful
+
+
+//todo the delete returns a root, 
+//* Passing *trav: The function sees the copied value immediately and kills the root.\
+//* Passing leftWing: The function skips the root (which has the copied value) and searches for the original value in the basement.
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -74,8 +87,8 @@ int main() {
     Orb e1 = {201, 15, "Fire Drake"};
     Orb e2 = {202, 5,  "Ice Wyrm"};
     Orb e3 = {203, 25, "Storm Serpent"};
-    Orb e4 = {204, 15, "Shadow Basilisk"};
-    Orb e5 = {205, 25, "Sun Phoenix"};
+    Orb e4 = {204, 11, "Shadow Basilisk"};
+    Orb e5 = {205, 24, "Sun Phoenix"};
     Orb e6 = {206, 10, "Lava Basilisk"};
 
     printf("\n=== INSERTING EGGS ===\n");
@@ -161,44 +174,6 @@ bool seekEggIterative(Vault* vault, Orb e) {
 
 }  
 
-Vault* removeEggIterative(Vault* vault, Orb e) {
-
-    Vault** trav = &vault;
-
-    for(;*trav != NULL && (*trav)->essence.eggID != e.eggID;) {
-        trav = (*trav)->essence.hatchEnergy < e.hatchEnergy ? &(*trav)->rightWing : &(*trav)->leftWing;
-    }
-
-    if (*trav == NULL) return vault;
-
-    Vault* temp = *trav;
-
-    if (!(*trav)->rightWing && !(*trav)->leftWing) {
-        free(temp);
-        *trav = NULL;
-    } else if (!(*trav)->leftWing) {
-        *trav = (*trav)->rightWing;
-        free(temp);
-    }
-    else if (!(*trav)->rightWing) {
-        *trav = (*trav)->leftWing;
-        free(temp);
-    } else {
-        Vault** pred = &(*trav)->leftWing;
-        while ((*pred)->rightWing) {
-            pred = &(*pred)->rightWing;
-            
-        }
-
-        (*trav)->essence = (*pred)->essence;
-        
-        
-       (*trav)->leftWing =removeEggIterative((*trav)->leftWing, (*pred)->essence);
-    }
-
-    return vault;
-} 
-
 void purgeVaultIterative(Vault* vault) {
     if (vault == NULL) return;
     purgeVaultIterative(vault->leftWing);
@@ -207,3 +182,39 @@ void purgeVaultIterative(Vault* vault) {
 
 }              
 
+
+Vault* removeEggIterative(Vault* vault, Orb e) {
+
+    Vault** trav = &vault;
+    
+    for(;*trav != NULL && (*trav)->essence.eggID != e.eggID;) {
+        trav = (*trav)->essence.hatchEnergy < e.hatchEnergy ? &(*trav)->rightWing : &(*trav)->leftWing;
+    }
+
+    if (*trav == NULL) return vault;
+
+    Vault* temp = *trav;
+
+    if ((*trav)->rightWing == NULL && (*trav)->leftWing == NULL) {
+        free(temp);
+        *trav = NULL;
+        
+        
+    } else if ((*trav)->leftWing == NULL) {
+        *trav = (*trav)->rightWing;
+        free(temp);
+    }
+    else if ((*trav)->rightWing == NULL) {
+        *trav = (*trav)->leftWing;
+        free(temp);
+    } else {
+        Vault** succ = &(*trav)->rightWing;
+        while ((*succ)->leftWing) {
+            succ = &(*succ)->leftWing;
+        }
+
+        (*trav)->essence = (*succ)->essence;
+        (*trav)->rightWing = removeEggIterative((*trav)->rightWing, (*succ)->essence);
+    }
+    return vault;
+}
