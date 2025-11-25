@@ -40,8 +40,8 @@ int main() {
     inorder(root);
 
     // // === DELETE TEST NODE ===
-    printf("\n\nDeleting 12...\n");
-    deleteNode(&root, 12);
+    printf("\n\nDeleting 8...\n");
+    deleteNode(&root, 8);
 
     printf("Inorder traversal after delete: ");
     inorder(root);
@@ -57,60 +57,54 @@ int main() {
 
 void addElem(BST *root, int data) {
 
-    BST* trav = root;
-    for(; *trav  != NULL && (*trav)->data != data; ) {
+    NodePtr* trav = root;
+    for(;*trav != NULL && (*trav)->data != data;) {
         trav = ((*trav)->data < data) ? &(*trav)->right : &(*trav)->left;
+
     }
 
     if (*trav == NULL) {
-        *trav = calloc(1, sizeof(Nodetype));
-        if (*trav != NULL) {
-            (*trav)->data = data;
-        }
+        NodePtr new = malloc(sizeof(Nodetype));
+        if (new == NULL) return;
+        new->data = data;
+        new->left = NULL;
+        new->right = NULL;
+
+        *trav = new;
     }
+ 
 }
-
 bool deleteNode(BST *root, int data) {
-
     BST* trav = root;
     for(;*trav != NULL && (*trav)->data != data;) {
-        trav = ((*trav)->data < data) ? &(*trav)->right : &(*trav)->left;
+        trav = (*trav)->data < data ? &(*trav)->right : &(*trav)->left;
     }
 
-    if (*trav == NULL) return -1;
+    if (*trav == NULL) return false;
 
     BST temp = *trav;
-
-
-
-    if ((*trav)->left == NULL && (*trav)->right == NULL) {
+    if ((*trav)->right == NULL && (*trav)->left == NULL) {
         free(temp);
         *trav = NULL;
-    } 
-
-    else if ((*trav)->left == NULL) {
+    } else if ((*trav)->left == NULL) {
         *trav = (*trav)->right;
         free(temp);
-    
-    }
-
+    } 
     else if ((*trav)->right == NULL) {
-        *trav = (*trav)->left;  //! * do not forget to access the ACTUAL NODE, THATS WHY WE DEREFERENCED IT, SO THE BST STRUCTURE WILL CAHGNE
-        free(temp); //! IF u just use the double pointer, youre just moving the local variable, this does nto change the tree, it only changes your local var's position!! THINKKK!!!
-    
-    }
-
-    else  {
+        *trav = (*trav)->left;
+        free(temp);
+    }  else {
         BST* succ = &(*trav)->right;
-        while ((*succ)->left != NULL) {
+        while ((*succ)->left) {
             succ = &(*succ)->left;
         }
 
         (*trav)->data = (*succ)->data;
         deleteNode(succ, (*succ)->data);
     }
-    return 1;
+    return true;
 }
+
 
 void inorder(BST root) {
     if (root == NULL) return;
