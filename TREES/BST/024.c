@@ -74,7 +74,7 @@ BSTNode* findMaxStarship(BSTNode *root);
 int bstHeight(BSTNode *root);
 
 // 10. Display starships in reverse alphabetical order iteratively
-void reverseInorderDisplay(BSTNode *root);
+
 
 // 11. Free all nodes iteratively
 void freeBST(BSTNode *root) {
@@ -109,10 +109,7 @@ int main() {
     printf("\n--- Spaceport Registry (In-Order) ---\n");
     inorderDisplay(root);
 
-    // // Display reverse in-order (Z → A)
-    // printf("\n--- Spaceport Registry (Reverse In-Order) ---\n");
-    // reverseInorderDisplay(root);
-
+   
     // Count total starships
     printf("\nTotal Starships: %d\n", countStarships(root));
 
