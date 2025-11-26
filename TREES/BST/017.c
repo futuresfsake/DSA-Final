@@ -105,33 +105,33 @@ int main() {
     printf("\n=== Inorder Traversal (Ascending PowerLevel) ===\n");
     driftAscending(hangar);
 
-    printf("\n\n=== Searching for Artifact ID 104 ===\n");
-    printf("Found: %s\n", seekByID(hangar, 104) ? "Yes" : "No");
+    // printf("\n\n=== Searching for Artifact ID 104 ===\n");
+    // printf("Found: %s\n", seekByID(hangar, 104) ? "Yes" : "No");
 
-    printf("\n=== Searching for Artifact ID 999 (Not in tree) ===\n");
-    printf("Found: %s\n", seekByID(hangar, 999) ? "Yes" : "No");
+    // printf("\n=== Searching for Artifact ID 999 (Not in tree) ===\n");
+    // printf("Found: %s\n", seekByID(hangar, 999) ? "Yes" : "No");
 
-    printf("\n=== Trace Minimum & Maximum ===\n");
-    Chamber* minCh = traceMin(hangar);
-    Chamber* maxCh = traceMax(hangar);
-    if(minCh) printf("Minimum ArtifactID: %d, PowerLevel: %d\n", minCh->cargo.artifactID, minCh->cargo.powerLevel);
-    if(maxCh) printf("Maximum ArtifactID: %d, PowerLevel: %d\n", maxCh->cargo.artifactID, maxCh->cargo.powerLevel);
+    // printf("\n=== Trace Minimum & Maximum ===\n");
+    // Chamber* minCh = traceMin(hangar);
+    // Chamber* maxCh = traceMax(hangar);
+    // if(minCh) printf("Minimum ArtifactID: %d, PowerLevel: %d\n", minCh->cargo.artifactID, minCh->cargo.powerLevel);
+    // if(maxCh) printf("Maximum ArtifactID: %d, PowerLevel: %d\n", maxCh->cargo.artifactID, maxCh->cargo.powerLevel);
 
-    printf("\n=== Deleting Artifact ID 103 ===\n");
-    hangar = purgeEntry(hangar, 103);
+    printf("\n=== Deleting Artifact ID 105 ===\n");
+    hangar = purgeEntry(hangar, 105);
     driftAscending(hangar);
 
-    printf("\n\n=== Deleting Artifact ID 101 (Root) ===\n");
-    hangar = purgeEntry(hangar, 101);
-    driftAscending(hangar);
+    // printf("\n\n=== Deleting Artifact ID 101 (Root) ===\n");
+    // hangar = purgeEntry(hangar, 101);
+    // driftAscending(hangar);
 
-    printf("\n\n=== Inserting Artifact ID 108 Iteratively ===\n");
-    ArchiveEntry a8 = {108, 60, "Shield of Dawn", "Pluto"};
-    hangar = stationInsertIter(hangar, a8);
-    driftAscending(hangar);
+    // printf("\n\n=== Inserting Artifact ID 108 Iteratively ===\n");
+    // ArchiveEntry a8 = {108, 60, "Shield of Dawn", "Pluto"};
+    // hangar = stationInsertIter(hangar, a8);
+    // driftAscending(hangar);
 
-    printf("\n=== Deleting Artifact ID 999 (Non-existent) ===\n");
-    hangar = purgeEntry(hangar, 999); // should do nothing
+    printf("\n=== Deleting Artifact ID 107 (Non-existent) ===\n");
+    hangar = purgeEntry(hangar, 107);
     driftAscending(hangar);
 
     // Clean up all remaining nodes
