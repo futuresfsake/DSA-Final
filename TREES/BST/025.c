@@ -253,7 +253,7 @@ else
     // Count total remaining Celestials
     int total = totalCelestialsIter(archive);
 
-    printf("Total Celestials: %d\n", total);
+    printf("\nTotal Celestials: %d\n", total);
    
     
     // Free memory

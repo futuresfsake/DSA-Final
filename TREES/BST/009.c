@@ -158,6 +158,7 @@ bool deleteNode(BST* root, int data) {
         (*trav)->data = (*pred)->data;
         deleteNode(pred, (*pred)->data);
     }
+    return true;
 }
 
 

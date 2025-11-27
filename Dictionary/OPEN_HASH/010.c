@@ -73,12 +73,8 @@ int main() {
      printf("\n\nLIST OF ARTIFACTS AFTER DELETING 103\n");
     displayTable(&galRepo);
 
-    // updateArtifactOrigin(&galRepo, 105, "Solaria Prime");
-    // moveArtifactToBucket(&galRepo, 102, 3);
-
+    
     printf("Total Artifacts: %d\n", totalArtifacts(&galRepo));
-    printf("Min ArtifactID: %d\n", findMinArtifactID(&galRepo));
-    // printf("Max ArtifactID: %d\n", findMaxArtifactID(&galRepo));
 
     clearTable(&galRepo);
 
@@ -197,33 +193,3 @@ void clearTable(ArtifactTable *table) {
     return;
 
 }
-
-
-int findMinArtifactID(ArtifactTable *table) {
-    
-      bool first = true;
-    int min = 0;
-
-    for (int i = 0; i < TABLE_SIZE; i++) {
-        ArtifactNode* trav = table->buckets[i];
-        while (trav) {
-            if (first) {
-                min = trav->data.artifactID;
-                first = false;
-            } else if (trav->data.artifactID < min) {
-                min = trav->data.artifactID;
-            }
-            trav = trav->next;
-        }
-    }
-
-    if (first) {
-        printf("Table is empty!\n");
-        return -1; // or some sentinel
-    }
-
-    return min;
-}
-int findMinArtifactID(ArtifactTable *table);            // min artifactID
-// void updateArtifactOrigin(ArtifactTable *table, int artifactID, const char* newOrigin); // update origin
-// void moveArtifactToBucket(ArtifactTable *table, int artifactID, int newBucket); // rehash artifact
