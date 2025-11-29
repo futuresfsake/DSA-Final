@@ -93,13 +93,7 @@ int main() {
         printf("\n[NOT FOUND] Patient ID %d\n", id);
     }
 
-    // // UPDATE (change ailment + riskLevel)
-    // update_patient(hospital, 5020,
-    //                "Crystal Core Stabilized",
-    //                3.1f);
-
-    // printf("\n--- After Update (ID 5020) ---\n");
-    // inorder_print(hospital);
+  
 
     // DELETE a patient by ID
     hospital = delete_patient(hospital, 5099);
@@ -203,9 +197,6 @@ Node* delete_patient(Node *root, int id) {
   return root;
 }
 
-// void update_patient(Node *root, int id,
-//                     const char *newAilment,
-//                     float newRisk);
 
 void inorder_print(Node *root) {
     if (root == NULL) return;
