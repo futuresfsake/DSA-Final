@@ -1,0 +1,381 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+
+#define MAX_NAME 50
+
+/*
+    =====================================================================
+       PROJECT: TRIAGE PROTOCOL (MAX-HEAP ARCHITECTURE)
+    ---------------------------------------------------------------------
+    A Binary Heap implemented in an array.
+    
+    STRUCTURAL RULES:
+    1. Root (Index 0) is always the HIGHEST severity.
+    2. Parent.severity >= Children.severity.
+    3. The tree must remain "Complete" (fill left to right).
+    =====================================================================
+*/
+
+typedef struct Soldier {
+    int severity_score;         // Priority Key (1-100)
+    char callsign[MAX_NAME];    // Data
+    int unit_id;                // Data
+} Soldier;
+
+typedef struct {
+    Soldier *beds;      // Dynamic Array of Soldiers
+    int count;          // Current number of patients
+    int capacity;       // Max beds available
+} FieldClinic;
+
+
+// ======================== PROTOTYPES ========================
+
+/* * MISSION: Setup.
+ * Allocate memory for the 'beds' array based on 'cap'.
+ * Set count to 0.
+ */
+void setup_field_hospital(FieldClinic *fc, int cap);
+/* * MISSION: Enqueue (Swim Up / Bubble Up).
+ * 1. Insert new soldier at the END of the array (index count).
+ * 2. Compare with Parent.
+ * 3. If Child > Parent, SWAP them. Repeat until rule is satisfied.
+ */
+void admit_patient(FieldClinic *fc, int sev, char *name, int uid);
+
+/* * MISSION: Dequeue (Sink Down / Bubble Down).
+ * 1. Save the Root (Index 0) to return later.
+ * 2. Move the LAST element (index count-1) to the Root position.
+ * 3. Decrement count.
+ * 4. Compare New Root with Children. Swap with the LARGEST child.
+ * 5. Repeat until rule is satisfied.
+ */
+Soldier treat_critical_patient(FieldClinic *fc);
+
+/* * MISSION: Filter Function.
+ * Iterate through the array (order doesn't matter for filtering).
+ * Print any patient with severity >= min_severity.
+ */
+void broadcast_critical_list(FieldClinic *fc, int min_severity);
+
+/* * MISSION: Logic Test (Heap Integrity).
+ * Check if the array actually represents a valid Max-Heap.
+ * Iterate from 0 to count/2. Check if parents are >= children.
+ * Return true if valid, false if corrupted.
+ */
+bool verify_triage_protocols(FieldClinic *fc);
+
+/* * MISSION: Logic Test (Update Priority).
+ * Find a patient by unit_id (Linear Search).
+ * Update their severity to 'new_severity'.
+ * DECISION:
+ * - If new > old: You must Swim Up.
+ * - If new < old: You must Sink Down.
+ */
+void stabilize_patient(FieldClinic *fc, int uid, int new_severity);
+
+/* * MISSION: Cleanup.
+ * Free the array.
+ */
+void close_hospital(FieldClinic *fc);
+
+void swim_up(FieldClinic *fc, int index);
+void sink_down(FieldClinic *fc, int index);
+
+void display_all_patients(FieldClinic *fc) {
+    if (fc->count < 0) {
+        printf("[Clinic EMPTY – no patients]\n");
+        return;
+    }
+
+   
+    printf("Index | Severity | CallSign         | UnitID\n");
+    printf("-----------------------------------------------\n");
+
+    for (int i = 0; i <= fc->count; i++) {
+        printf("%5d | %8d | %-15s | %d\n",
+               i,
+               fc->beds[i].severity_score,
+               fc->beds[i].callsign,
+               fc->beds[i].unit_id);
+    }
+}
+
+
+
+// ======================== MAIN TESTER ========================
+int main() {
+    FieldClinic clinic;
+    int max_beds = 15;
+    
+    setup_field_hospital(&clinic, max_beds);
+
+    printf("=== PHASE 1: MASS CASUALTY INTAKE ===\n");
+    // Trace the "Swim Up" logic here.
+    // 1. Insert 50.
+    // 2. Insert 80 -> 80 Swaps with 50. Root is 80.
+    // 3. Insert 90 -> 90 Swaps with 50 (at idx 1?), then Swaps with 80. Root is 90.
+    
+    admit_patient(&clinic, 50, "Rookie", 101);
+    admit_patient(&clinic, 80, "Sarge", 102);
+    admit_patient(&clinic, 30, "Medic", 103);
+    admit_patient(&clinic, 90, "General", 104); 
+    admit_patient(&clinic, 40, "Driver", 105);
+    admit_patient(&clinic, 85, "Sniper", 106);
+
+    printf("\n=== PATIENT ROSTER ===\n");
+display_all_patients(&clinic);
+
+    
+
+    printf("Heap Integrity Check: %s\n", verify_triage_protocols(&clinic) ? "PASSED" : "FAILED");
+
+    printf("\n=== PHASE 2: CRITICAL LIST (Severity >= 80) ===\n");
+    // Should show General (90), Sniper (85), Sarge (80)
+    broadcast_critical_list(&clinic, 80);
+
+    printf("\n\n");
+
+    printf("\n=== PHASE 3: TREATMENT (Dequeue Max) ===\n");
+    // Should remove General (90).
+    // The last item (Driver or Sniper depending on shape) moves to root and sinks down.
+    Soldier treated = treat_critical_patient(&clinic);
+    printf("Treating: %s (Severity %d)\n", treated.callsign, treated.severity_score);
+    
+    printf("\n=== PATIENT ROSTER (After Deque) ===\n");
+    display_all_patients(&clinic);
+
+    printf("New Critical List (Top Priority): %d\n", clinic.beds[0].severity_score);
+
+    printf("\n=== PHASE 4: PATIENT UPDATE (Stabilize Rookie) ===\n");
+    // Rookie was 50. Condition worsens to 95.
+    // Logic: Find Rookie -> Update to 95 -> Swim Up to Root.
+    stabilize_patient(&clinic, 101, 95);
+    
+    printf("After Stabilization, Root is: %s (Sev %d)\n", 
+           clinic.beds[0].callsign, clinic.beds[0].severity_score);
+
+           printf("Proof it was stabilized: \n");
+           display_all_patients(&clinic);
+
+    printf("\n=== PHASE 5: CLOSE HOSPITAL ===\n");
+    close_hospital(&clinic);
+
+    return 0;
+}
+
+
+// ====================== FUNCTION IMPLEMENTATIONS ======================
+
+void setup_field_hospital(FieldClinic *fc, int cap) {
+    // TODO: Malloc 'beds' array.
+     fc->beds = malloc(sizeof(Soldier) * cap);
+    if (fc->beds == NULL) return;
+
+    fc->capacity = cap;
+    fc->count = -1;
+}
+
+void admit_patient(FieldClinic *fc, int sev, char *name, int uid) {
+    // TODO: Insert at index [count].
+    // TODO: Loop (while index > 0): Compare with parent (index-1)/2. 
+    // TODO: Swap if child > parent. Update index to parent.
+
+
+    int child, pr;
+    if (fc->count == fc->capacity -1) return;
+
+    fc->count++;
+    child = fc->count;
+    pr = (child-1)/2;
+
+    while (child >0 && fc->beds[pr].severity_score < sev) {
+        fc->beds[child] = fc->beds[pr];
+        child = pr;
+        pr = (child-1)/2;
+
+    }
+
+    Soldier b;
+    b.severity_score = sev;
+    strcpy(b.callsign, name);
+    b.unit_id = uid;
+    fc->beds[child] = b;
+}
+
+Soldier treat_critical_patient(FieldClinic *fc) {
+    // TODO: Store root (index 0).
+    // TODO: Move last element to index 0. Decrease count.
+    // TODO: Loop: Find largest child (left vs right).
+    // TODO: Swap if parent < largest child. Update index to child.
+    Soldier empty = {0, "", 0};
+    if (fc->count == 0) return empty;
+    
+
+    int child, pr;
+    Soldier root, swap;
+
+    root = fc->beds[0];
+    fc->beds[0] = fc->beds[fc->count];
+    fc->count--;
+
+    pr = 0;
+    child = 2 * pr +1;
+
+    while (child <= fc->count) {
+        if (child+1 <= fc->count && fc->beds[child+1].severity_score >fc->beds[child].severity_score) {
+            child++;
+        }
+
+        if (fc->beds[pr].severity_score <fc->beds[child].severity_score) {
+            swap = fc->beds[pr];
+            fc->beds[pr] = fc->beds[child];
+            fc->beds[child] = swap;
+
+            pr = child;
+            child = (2 * pr)+1;
+        } else {
+            break;
+        }
+    }
+
+    return root;
+
+}
+
+// void broadcast_critical_list(FieldClinic *fc, int min_severity) {
+//     // TODO: Simple for-loop through the array.
+// }
+
+// bool verify_triage_protocols(FieldClinic *fc) {
+//     // TODO: Loop i from 0 to count/2.
+//     // Check if beds[i] < beds[left_child] or beds[i] < beds[right_child].
+//     return true;
+// }
+
+void stabilize_patient(FieldClinic *fc, int uid, int new_severity) {
+    // TODO: Linear search to find index of uid.
+    // TODO: Compare new vs old severity.
+    // TODO: Call your swim_up or sink_down logic accordingly.
+
+
+    for(int i = 0; i <= fc->count; i++) {
+        if (fc->beds[i].unit_id == uid) {
+            int temp = fc->beds[i].severity_score;
+            fc->beds[i].severity_score = new_severity;
+
+            if (temp < new_severity) {
+                swim_up(fc, i);
+            } else {
+                sink_down(fc, i);
+            }
+        }
+    }
+
+    return;
+}
+
+void close_hospital(FieldClinic *fc) {
+    // TODO: Free beds.
+
+    free(fc->beds);
+    fc->capacity = -1;
+    fc->count = -1;
+}
+
+void swim_up(FieldClinic *fc, int index) {
+
+    int child = index;
+   int pr = (child-1)/2;
+
+
+    Soldier swap;
+
+    while (child >0 && fc->beds[pr].severity_score < fc->beds[child].severity_score) {
+        swap = fc->beds[pr];
+        fc->beds[pr] = fc->beds[child];
+        fc->beds[child] = swap;
+
+        child = pr;
+        pr = (child-1)/2;
+    }
+}
+void sink_down(FieldClinic *fc, int index) {
+
+   int pr = index;
+    int child = 2 * pr +1;
+    Soldier swap;
+
+
+    while (child <= fc->count) {
+        if (child+1 <= fc->count && fc->beds[child+1].severity_score > fc->beds[child].severity_score) {
+            child++;
+        }
+        if (fc->beds[pr].severity_score < fc->beds[child].severity_score) {
+            swap = fc->beds[pr];
+            fc->beds[pr] = fc->beds[child];
+            fc->beds[child] = swap;
+
+            pr = child;
+            child = 2 * pr +1;
+            
+        } else {
+            break;
+        }
+    }
+
+
+
+}
+
+
+
+void broadcast_critical_list(FieldClinic *fc, int min_severity) {
+     printf("Index | Severity | CallSign         | UnitID\n");
+    printf("-----------------------------------------------\n");
+    for(int i = 0; i < fc->count; i++) {
+        if (fc->beds[i].severity_score >= min_severity) {
+           
+
+   
+        printf("%5d | %8d | %-15s | %d\n",
+               i,
+               fc->beds[i].severity_score,
+               fc->beds[i].callsign,
+               fc->beds[i].unit_id);
+        
+    }
+}
+
+}
+
+
+
+
+bool verify_triage_protocols(FieldClinic *fc) {
+
+
+    int pr = 0;
+    int child = 2 * pr +1;
+    Soldier swap;
+
+
+    while (child <= fc->count) {
+        if (child+1 <= fc->count && fc->beds[child+1].severity_score < fc->beds[child].severity_score) {
+            return false;
+        }
+        if (fc->beds[pr].severity_score < fc->beds[child].severity_score) {
+            return false;
+            
+        } 
+
+        pr = child;
+        child = pr*2+1;
+    }
+
+    return true;
+
+}
+
