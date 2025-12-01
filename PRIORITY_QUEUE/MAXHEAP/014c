@@ -335,7 +335,7 @@ void sink_down(FieldClinic *fc, int index) {
 void broadcast_critical_list(FieldClinic *fc, int min_severity) {
      printf("Index | Severity | CallSign         | UnitID\n");
     printf("-----------------------------------------------\n");
-    for(int i = 0; i < fc->count; i++) {
+    for(int i = 0; i <= fc->count; i++) {
         if (fc->beds[i].severity_score >= min_severity) {
            
 
@@ -357,22 +357,28 @@ void broadcast_critical_list(FieldClinic *fc, int min_severity) {
 bool verify_triage_protocols(FieldClinic *fc) {
 
 
-    int pr = 0;
-    int child = 2 * pr +1;
-    Soldier swap;
+  
+    int i = 0;  
+    int lastParent = fc->count / 2;  
 
+    while (i <= lastParent) {
 
-    while (child <= fc->count) {
-        if (child+1 <= fc->count && fc->beds[child+1].severity_score < fc->beds[child].severity_score) {
+        int left = 2*i + 1;
+        int right = 2*i + 2;
+
+        // Check left child
+
+        //* checking each parent and left child, parent and right child
+        if (left <= fc->count &&
+            fc->beds[i].severity_score < fc->beds[left].severity_score)
             return false;
-        }
-        if (fc->beds[pr].severity_score < fc->beds[child].severity_score) {
-            return false;
-            
-        } 
 
-        pr = child;
-        child = pr*2+1;
+        // Check right child
+        if (right <= fc->count &&
+            fc->beds[i].severity_score < fc->beds[right].severity_score)
+            return false;
+
+        i++;
     }
 
     return true;
