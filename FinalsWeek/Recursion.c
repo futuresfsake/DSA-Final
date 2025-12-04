@@ -109,15 +109,6 @@ void destroyTree(BST root) {
 }
 
 
-// // Search for a key in BST
-// BST search(BST root, const char *key_data);
-
-
-// // Find the minimum node in BST (helper for deletion)
-// BST findMin(BST root);
-
-// // Find the maximum node in BST (helper)
-// BST findMax(BST root);
 
 /**
  * ===========================
