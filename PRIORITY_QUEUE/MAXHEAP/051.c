@@ -269,8 +269,8 @@ int main() {
     else
         printf("NOT FOUND.\n");
 
-    printf("\n===== DELETE: 'Arklon' =====\n");
-    registry = deleteSpecies(registry, "Arklon");
+    printf("\n===== DELETE: 'Zenthar' =====\n");
+    registry = deleteSpecies(registry, "Zenthar");
 
     printf("\n===== INORDER AFTER DELETE =====\n");
     inorder(registry);
