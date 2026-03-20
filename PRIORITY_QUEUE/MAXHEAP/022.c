@@ -16,7 +16,45 @@ typedef struct {
     int count;
 } ERQueue;
 
+typedef struct {
+    int arr[MAX_PATIENTS]; // store indices of patients
+    int front;
+    int rear;
+    int size;
+} IndexQueue;
 
+void enqueue(IndexQueue *q, int idx) {
+
+    
+q->arr[q->rear++] = idx;
+
+}
+int dequeue(IndexQueue *q) {
+    return q->arr[q->front++];
+}
+void BFS (ERQueue* eq) {
+
+    IndexQueue q;
+    q.front = 0;
+    q.rear = 0;
+    q.size = 0;
+
+    enqueue(&q, 0);
+
+    while (q.front < q.rear) {
+        int i = dequeue(&q);
+        Patient p = eq->patients[i];
+    printf("[ID:%d Name:%s Severity:%d]  \n", p.patientID, p.name, p.severity);
+
+
+    int left = 2 * i +1;
+    int right = 2 * i +2;
+
+    if (left < eq->count) enqueue(&q, left);
+    if (right < eq->count)  enqueue(&q, right);
+
+    }
+}
 
 void initQueue(ERQueue *eq);
 void swap(Patient *a, Patient *b);
