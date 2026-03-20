@@ -63,7 +63,7 @@ int main() {
     displayQueue(&eq);
 
     printf("\n=== MINHEAPIFY / HEAPSORT QUEUE ===\n");
-    heapSort(&eq);
+    heapSort(&eq, );
     displayQueue(&eq);
 
     return 0;
