@@ -201,4 +201,3 @@ void filter_impurities(Solution* sol, float threshold) {
     }
 }
 }
-}
