@@ -1,0 +1,164 @@
+how do you know when is the right time to not overwrite the child and just return , and to overwrite the chid
+ChatGPT said:
+
+Great question — this is the core concept that separates search, insert, and delete in BSTs.
+
+I’ll explain it super clearly and simply.
+
+✅ THE RULE
+Only TWO operations modify the tree:
+
+Insert
+
+Delete
+
+All other operations MUST NOT modify pointers:
+
+Search by ID
+
+Search by PowerIndex
+
+Traversals
+
+Min/Max
+
+Count
+
+Display
+
+Freeing the tree (only frees, not rearrange)
+
+📌 Why? Because the purpose is different.
+✅ 1. SEARCH — should NEVER overwrite children
+
+Purpose:
+✔ Find a node
+❌ Never change structure
+
+Correct logic:
+
+If search key < node key → go left
+Else go right
+
+
+We NEVER assign:
+
+archive->left = something;
+archive->right = something;
+
+
+Because search does NOT insert or delete anything.
+
+🟢 Example: SEARCH (no overwrite)
+if (powerIndex < node->powerIndex)
+    node = node->left;
+else
+    node = node->right;
+
+
+You move a pointer variable, not modify the tree.
+
+❌ Incorrect:
+node->left = detect(...);   // WRONG
+
+
+That changes the tree and can break subtrees.
+
+----------------------------------------------------------
+✅ 2. INSERT — MUST overwrite children
+
+Purpose:
+✔ Add a new node to the correct position
+✔ Must update left or right child pointer
+
+Correct logic:
+
+Find the NULL spot.
+Attach the new node there.
+
+
+So insert MUST do:
+
+node->left = newNode;
+
+
+or
+
+node->right = newNode;
+
+
+This is correct and required.
+
+🟢 Example: INSERT (correct overwrite)
+if (c.powerIndex < node->powerIndex)
+    node->left = insert(node->left, c);
+else
+    node->right = insert(node->right, c);
+
+
+Here, overwriting is NECESSARY because you're building the tree.
+
+----------------------------------------------------------
+✅ 3. DELETE — MUST overwrite children
+
+Delete changes the structure:
+
+You remove a node
+
+You reattach its children to maintain the BST structure
+
+So delete MUST modify child pointers.
+
+Example:
+
+node->left = delete(node->left, key);
+
+
+Why? Because the subtree may change after deletion.
+We must reconnect the updated subtree.
+
+----------------------------------------------------------
+🧠 THE SIMPLE RULE TO REMEMBER
+Operation	Modify child pointer?
+🔍 Search	❌ NO
+➕ Insert	✔ YES
+❌ Delete	✔ YES
+👀 Traversals	❌ NO
+🔽 Min/Max	❌ NO
+🧮 Count	❌ NO
+📌 WHY SEARCH SHOULD NOT MODIFY CHILDREN
+
+Because in search you are only moving a temporary pointer:
+
+BeastNode* trav = root;
+trav = trav->left;   // OK
+
+
+You are NOT doing:
+
+root->left = something;   // BAD for search
+
+
+This changes the structure and corrupts the BST.
+
+----------------------------------------------------------
+🎯 Final Summary
+✔ Overwrite child pointers ONLY when changing the BST structure:
+
+Insert a new node
+
+Delete a node
+
+❌ DO NOT overwrite child pointers when reading the tree:
+
+Search
+
+Traverse
+
+Find min/max
+
+Count
+
+Display
+
+If you want, I can color-code and annotate your insert/search/delete functions so you see exactly where overwriting is allowed and forbidden.

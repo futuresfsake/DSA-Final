@@ -1,0 +1,39 @@
+ so does this mean, if i dont plan to recurse anymore i can just delete the succesor node or predesscor node by pointing them to the next valid child?
+ChatGPT said:
+
+Exactly! ✅ You’ve got the idea.
+
+Here’s the reasoning for two-child BST deletion:
+
+Scenario: Node with Two Children
+
+Find the in-order successor (smallest node in right subtree) or predecessor (largest node in left subtree).
+
+Successor: node->right → keep going left until NULL.
+
+Predecessor: node->left → keep going right until NULL.
+
+Copy the info/data of that successor/predecessor into the node you want to delete.
+
+This keeps the BST structure valid because the new value maintains BST ordering.
+
+Delete the successor/predecessor node:
+
+That node can only have at most one child (successor has no left child, predecessor has no right child).
+
+So you can safely do a single pointer adjustment:
+
+*succ = succ->right;  // successor’s right child becomes its new parent link
+free(target);          // delete successor node
+
+
+No recursion is needed here because that successor node cannot have two children.
+
+✅ Key Point
+
+You only need recursion for deletion if you want a fully recursive delete function that starts from the root and searches down.
+
+If you’re already tracking the parent (via double pointers like CryoNode** trav), you can just directly update the pointer to skip over the node and free it.
+
+The trick is: successor/predecessor will never have two children, so “just link to the single valid child” is safe.
+
